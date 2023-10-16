@@ -80,7 +80,7 @@ function animate() {
             // rayon 0 car celui du soleil
             astres[i].position.x = Math.cos(angle_t / PERIODES[i] * Math.PI/180) * (RAYONS[0] + DISTANCES[i]) * zoom;
             astres[i].position.z = Math.sin(angle_t / PERIODES[i] * Math.PI/180) * (RAYONS[0] + DISTANCES[i]) * zoom;
-            astres[i].position.y = Math.sin(INCLINAISONS[i]) *
+            astres[i].position.y = Math.sin(INCLINAISONS[i] * Math.PI/180) *
                                 Math.cos(angle_t / PERIODES[i] * Math.PI/180) *
                                 (RAYONS[0] + DISTANCES[i]);
         }
@@ -93,7 +93,7 @@ function animate() {
     astres[4].position.x = astres[3].position.x + Math.cos(angle_t / PERIODES[4] * Math.PI/180) * (RAYONS[3] + DISTANCES[4]) * zoom;
     astres[4].position.z = astres[3].position.z + Math.sin(angle_t / PERIODES[4] * Math.PI/180) * (RAYONS[3] + DISTANCES[4]) * zoom;
     astres[4].position.y = astres[3].position.y +
-                        Math.sin(INCLINAISONS[4]) *
+                        Math.sin(INCLINAISONS[4] * Math.PI/180) *
                         Math.cos(angle_t / PERIODES[4] * Math.PI/180) *
                         (RAYONS[3] + DISTANCES[4]);
 
@@ -134,7 +134,7 @@ function animate() {
             ### Infos Project ###
         `;
         text_div.innerHTML += `</br>
-            <a href='https://github.com/nadnone/solar_system' target='_blank'>Code source</a>
+            <a href='https://github.com/nadnone/solar_system' target='_blank'>Source code</a>
             </br></br>
             <a href='https://github.com/nadnone/' target='_blank'>GitHub Profile Page</a>
             </br></br>
@@ -183,7 +183,7 @@ window.addEventListener("keypress", (event) => {
             break;
 
         case 'Digit9':
-            follow_astre = astres[9];
+            follow_astre = astres[9].position;
             break;
 
 
