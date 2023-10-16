@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { COLORS, DISTANCES, PERIODES, RAYONS } from './constants';
+import { COLORS, DISTANCES, INCLINAISONS, PERIODES, RAYONS } from './constants';
 
 // initialisations
 const scene = new THREE.Scene();
@@ -66,11 +66,16 @@ function animate() {
     // on commence à 1 pour passer le soleil
     for (let i = 1; i < astres.length; i++) {
 
+
+
         if (i !== 4) // sauf la lune
         {   
             // rayon 0 car celui du soleil
             astres[i].position.x = Math.cos(angle_t / PERIODES[i] * Math.PI/180) * (RAYONS[0] + DISTANCES[i]) * zoom;
-            astres[i].position.y = Math.sin(angle_t / PERIODES[i] * Math.PI/180) * (RAYONS[0] + DISTANCES[i]) * zoom;
+            astres[i].position.z = Math.sin(angle_t / PERIODES[i] * Math.PI/180) * (RAYONS[0] + DISTANCES[i]) * zoom;
+            astres[i].position.y = Math.sin(INCLINAISONS[i]) *
+                                Math.cos(angle_t / PERIODES[i] * Math.PI/180) *
+                                (RAYONS[0] + DISTANCES[i]);
         }
 
         astres[i].scale.set(zoom, zoom, zoom);
@@ -79,8 +84,13 @@ function animate() {
 
     // la lune : rayon 3 pour la terre
     astres[4].position.x = astres[3].position.x + Math.cos(angle_t / PERIODES[4] * Math.PI/180) * (RAYONS[3] + DISTANCES[4]) * zoom;
-    astres[4].position.y = astres[3].position.y + Math.sin(angle_t / PERIODES[4] * Math.PI/180) * (RAYONS[3] + DISTANCES[4]) * zoom;
+    astres[4].position.z = astres[3].position.z + Math.sin(angle_t / PERIODES[4] * Math.PI/180) * (RAYONS[3] + DISTANCES[4]) * zoom;
+    astres[4].position.y = astres[3].position.y +
+                        Math.sin(INCLINAISONS[4]) *
+                        Math.cos(angle_t / PERIODES[4] * Math.PI/180) *
+                        (RAYONS[3] + DISTANCES[4]);
 
+                        
 
     // on observe l'astre demandé
     camera.lookAt(new THREE.Vector3(follow_astre.x, follow_astre.y, follow_astre.z));
