@@ -13,13 +13,20 @@ document.body.appendChild( renderer.domElement );
 let text_div = document.createElement("div");
 text_div.style.position = "absolute";
 text_div.style.width = "200px";
-text_div.style.height = "200pt";
+text_div.style.height = "100vh";
 text_div.style.backgroundColor = "white";
 text_div.innerText = "Benchmark time: ";
 text_div.style.top = 0;
 text_div.style.left = 0;
 document.body.appendChild(text_div);
 
+let data_keyboard_info = "";
+
+fetch("./infos_keyboard.txt")
+    .then((response) => response.text())
+    .then((text) => {
+        data_keyboard_info = text;
+    })
 
 // basics
 let astres = []
@@ -49,7 +56,7 @@ camera.position.y = 10;
 // mutable data
 let angle = 0.;
 let zoom = 1;
-let follow_astre = new THREE.Vector3(0,0,0);
+let follow_astre = astres[3].position;
 
 
 function animate() {   
@@ -102,20 +109,38 @@ function animate() {
     const t1 = performance.now();
     if (angle % 45 === 0)
     {
-        text_div.innerText = `Benchmark time: ${(t1 - t0).toFixed(3)}
-            \nTouches au clavier :
-                0: Soleil
-                1: Mercure
-                2: Venus
-                3: Terre
-                4: Lune
-                5: Mars
-                6: Jupiter
-                7: Saturne
-                8: Uranus
-                9: Neptune
+        text_div.innerText = `### [Debug] ###
         
+            Benchmark time: ${(t1 - t0).toFixed(3)}
+            
+            ### Planets Keys ###
+
+            0: Soleil
+            1: Mercure
+            2: Venus
+            3: Terre
+            4: Lune
+            5: Mars
+            6: Jupiter
+            7: Saturne
+            8: Uranus
+            9: Neptune
+
+            ### Zoom Keys ###
+
+                w: zoom + 
+                s: zoom -
+
+            ### Infos Project ###
         `;
+        text_div.innerHTML += `</br>
+            <a href='https://github.com/nadnone/solar_system' target='_blank'>Code source</a>
+            </br></br>
+            <a href='https://github.com/nadnone/' target='_blank'>GitHub Profile Page</a>
+            </br></br>
+            <a href='https://nadnone.github.io' target='_blank'>Nadfolio (Portfolio)</a>
+        `;
+
     }
 }
 
