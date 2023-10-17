@@ -1,6 +1,5 @@
 const RATIO_DIST = 10**(-1);
 const RADIO_PERIODE = 10**(-3);
-
 const RATIO_RAYON = 10**(-4);
 
 const SOLEIL_RAYON = 696340 * RATIO_RAYON / 10; // millions de km / 10
@@ -8,7 +7,7 @@ const SOLEIL_DIST = 0;
 const SOLEIL_PERIODE = 0;
 const SOLEIL_COLOR = "#FDB813";
 
-const MERCURE_PERIODE = 88 * RADIO_PERIODE
+const MERCURE_PERIODE = 88 * RADIO_PERIODE // Jours
 const MERCURE_DIST = 58 * RATIO_DIST; // Millions de km
 const MERCURE_RAYON = 2439 * RATIO_RAYON; // Millions de km
 const MERCURE_COLOR = "#b1adad";
@@ -26,7 +25,7 @@ const TERRE_RAYON = 6371 * RATIO_RAYON; // Millions de km
 const TERRE_COLOR = "#0000ff";
 const TERRE_INCLINAISON = 0;
 
-const LUNE_PERIODE = 29 * RADIO_PERIODE
+const LUNE_PERIODE = 29.5 * RADIO_PERIODE
 const LUNE_DIST_TERRE = 384400 * RATIO_DIST * 10**(-6); // millions de km
 const LUNE_RAYON = 1737 * RATIO_RAYON; // Millions de km
 const LUNE_COLOR = "#f5f5f5";
@@ -114,7 +113,7 @@ const COLORS = [
     NEPTUNE_COLOR
 ]
 
-const INCLINAISONS = [
+const INCLINATIONS = [
     1,
     MERCURE_INCLINAISON,
     VENUS_INCLINAISON,
@@ -127,10 +126,53 @@ const INCLINAISONS = [
     NEPTUNE_INCLINAISON
 ]
 
+
+const COMMANDS_TEXT = `
+    ### Stars/Planets Keys ###
+            
+    0: Sun
+    1: Mercury
+    2: Venus
+    3: Earth
+    4: Moon
+    5: Mars
+    6: Jupiter
+    7: Saturn
+    8: Uranus
+    9: Neptun
+
+    ### Zoom Keys ###
+
+    W: scale + 0.1
+    S: scale - 0.1
+
+    ### Speed Keys ###
+    A: Speed * 2 
+    D: Speed / 2
+
+    ### MISC ###
+    F5: Reset All
+
+`;
+
+                    
+const PROJECT_LINK_TEXT = `<br/></br>### Infos Project ###<br/>
+    <a href='https://github.com/nadnone/solar_system' target='_blank'>Source code</a></br>
+    <a href='https://github.com/nadnone/' target='_blank'>GitHub Profile Page</a></br>
+    <a href='https://nadnone.github.io' target='_blank'>Nadfolio (Portfolio)</a>
+`;
+
+const MAX_SPEED_RATIO = 60;
+const ANGLE_TO_RAD = Math.PI/180;
+
 export { 
     PERIODES,
     DISTANCES,
     RAYONS,
     COLORS,
-    INCLINAISONS
+    INCLINATIONS,
+    COMMANDS_TEXT,
+    PROJECT_LINK_TEXT,
+    MAX_SPEED_RATIO,
+    ANGLE_TO_RAD
 }

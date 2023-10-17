@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { COLORS, DISTANCES, INCLINAISONS, PERIODES, RAYONS } from './constants';
+import { ANGLE_TO_RAD, COLORS, COMMANDS_TEXT, DISTANCES, INCLINATIONS, MAX_SPEED_RATIO, PERIODES, PROJECT_LINK_TEXT, RAYONS } from './constants';
 
 // initialisations
 const scene = new THREE.Scene();
@@ -9,28 +9,15 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-// for texts and 2D stuffs
-let text_div = document.createElement("div");
-text_div.style.position = "absolute";
-text_div.style.width = "200px";
-text_div.style.height = "100vh";
-text_div.style.backgroundColor = "white";
-text_div.innerText = "Benchmark time: ";
-text_div.style.top = 0;
-text_div.style.left = 0;
-document.body.appendChild(text_div);
-
-let data_keyboard_info = "";
-
-fetch("./infos_keyboard.txt")
-    .then((response) => response.text())
-    .then((text) => {
-        data_keyboard_info = text;
-    })
+// panel text
+let text_panel = document.createElement("div");
+text_panel.className = "panel";
+document.body.appendChild(text_panel);
 
 // basics
 let astres = []
 
+// gen meshes
 for (let i = 0; i < 10; i++) {
    
     const geometry = new THREE.SphereGeometry(RAYONS[i], 32, 32);
@@ -41,7 +28,7 @@ for (let i = 0; i < 10; i++) {
 }
 
 
-// adds
+// add to scene
 for (let i = 0; i < astres.length; i++) {
    
     scene.add(astres[i]);
@@ -57,6 +44,7 @@ camera.position.y = 10;
 let angle = 0.;
 let zoom = 1;
 let follow_astre = astres[3].position;
+let speed_time = 1;
 
 
 function animate() {   
@@ -66,36 +54,40 @@ function animate() {
 	renderer.render( scene, camera );
 
     
-    const t = (Date.now() / 1000) % 100; // secondes écoulées
-    const angle_t = t / 60 * 360 // angle du temps
+    const t = (Date.now() / 100 % 10000); // secondes écoulées
+    const angle_t = t * speed_time // angle du temps
 
 
     // on commence à 1 pour passer le soleil
     for (let i = 1; i < astres.length; i++) {
 
 
+        const phi = angle_t / PERIODES[i]; // angle de rotation
+        let  r = 0; // rayon
+        let add_pos = new THREE.Vector3(); // référenciel
 
         if (i !== 4) // sauf la lune
         {   
             // rayon 0 car celui du soleil
-            astres[i].position.x = Math.cos(angle_t / PERIODES[i] * Math.PI/180) * (RAYONS[0] + DISTANCES[i]) * zoom;
-            astres[i].position.z = Math.sin(angle_t / PERIODES[i] * Math.PI/180) * (RAYONS[0] + DISTANCES[i]) * zoom;
-            astres[i].position.y = Math.sin(INCLINAISONS[i] * Math.PI/180) *
-                                Math.cos(angle_t / PERIODES[i] * Math.PI/180) *
-                                (RAYONS[0] + DISTANCES[i]);
+            r = RAYONS[0] + DISTANCES[i];
         }
+        else // pour la lune
+        {
+            // la lune : rayon 3 pour la terre
+            r = RAYONS[3] + DISTANCES[i];
+            add_pos = astres[3].position
+        }
+
+        astres[i].position.x = add_pos.x + Math.cos(phi * ANGLE_TO_RAD) * r * zoom;
+        astres[i].position.z = add_pos.z + Math.sin(phi * ANGLE_TO_RAD) * r * zoom;
+        astres[i].position.y = add_pos.y + Math.cos(phi * ANGLE_TO_RAD) * Math.sin(INCLINATIONS[i] * ANGLE_TO_RAD)* r * zoom;
 
         astres[i].scale.set(zoom, zoom, zoom);
 
     }
 
-    // la lune : rayon 3 pour la terre
-    astres[4].position.x = astres[3].position.x + Math.cos(angle_t / PERIODES[4] * Math.PI/180) * (RAYONS[3] + DISTANCES[4]) * zoom;
-    astres[4].position.z = astres[3].position.z + Math.sin(angle_t / PERIODES[4] * Math.PI/180) * (RAYONS[3] + DISTANCES[4]) * zoom;
-    astres[4].position.y = astres[3].position.y +
-                        Math.sin(INCLINAISONS[4] * Math.PI/180) *
-                        Math.cos(angle_t / PERIODES[4] * Math.PI/180) *
-                        (RAYONS[3] + DISTANCES[4]);
+
+
 
                         
 
@@ -109,38 +101,17 @@ function animate() {
     const t1 = performance.now();
     if (angle % 45 === 0)
     {
-        text_div.innerText = `### [Debug] ###
-        
-            Benchmark time: ${(t1 - t0).toFixed(3)}
-            
-            ### Planets Keys ###
+        text_panel.innerText = COMMANDS_TEXT;
+        text_panel.innerText += `\n\n### Info system ###
+            Speed: 1s = ~${(speed_time*30).toFixed(0)} Days
 
-            0: Soleil
-            1: Mercure
-            2: Venus
-            3: Terre
-            4: Lune
-            5: Mars
-            6: Jupiter
-            7: Saturne
-            8: Uranus
-            9: Neptune
-
-            ### Zoom Keys ###
-
-                w: zoom + 
-                s: zoom -
-
-            ### Infos Project ###
+            [DEBUG]
+            Benchmark time: ~${(t1 - t0).toFixed(3)}
+            Time: ${(t).toFixed(0)} seconds
+            Virtual Time: ${(angle_t).toFixed(0)} Days
         `;
-        text_div.innerHTML += `</br>
-            <a href='https://github.com/nadnone/solar_system' target='_blank'>Source code</a>
-            </br></br>
-            <a href='https://github.com/nadnone/' target='_blank'>GitHub Profile Page</a>
-            </br></br>
-            <a href='https://nadnone.github.io' target='_blank'>Nadfolio (Portfolio)</a>
-        `;
-
+        text_panel.innerHTML += PROJECT_LINK_TEXT;
+      
     }
 }
 
@@ -181,12 +152,17 @@ window.addEventListener("keypress", (event) => {
         case 'Digit8':
             follow_astre = astres[8].position;
             break;
-
         case 'Digit9':
             follow_astre = astres[9].position;
             break;
 
-
+        case 'KeyA':
+            speed_time *= 2
+            break;
+        case 'KeyD':
+            speed_time /= 2
+            break;
+    
 
         default:
             break;
@@ -196,6 +172,14 @@ window.addEventListener("keypress", (event) => {
     {
         zoom = 0.01;
     };
+    if (speed_time < 1/30)
+    {
+        speed_time = 1/30;
+    }
+    else if (speed_time > MAX_SPEED_RATIO)
+    {
+        speed_time = MAX_SPEED_RATIO;
+    }
 
 });
 

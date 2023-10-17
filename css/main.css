@@ -2,3 +2,15 @@
     margin: 0;
     user-select: none;
 }
+
+.panel {
+    position: absolute;
+    color: white;
+    width: 200px;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+a:visited, a {
+    color: rgb(10, 231, 3)
+}
