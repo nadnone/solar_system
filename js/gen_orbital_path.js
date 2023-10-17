@@ -5,7 +5,7 @@ function orbital_path(k, zoom)
 {
     let points = [];
 
-    for (let j = 0; j <= 360; j+=10) {
+    for (let j = 0; j <= 360; j+= 6) {
         
 
         if (k !== 4) // sauf la lune
@@ -33,7 +33,7 @@ function saturn_rings(k, zoom, astres)
     for (let j = 0; j <= 360; j+=10) {
 
         // 7 car saturne + ([0]/[1] = ratio)
-        const r = RAYONS[7] + (SATURN_RINGS_R[0] / SATURN_RINGS_R[1]) * k * 10;
+        const r = RAYONS[7] + (SATURN_RINGS_R[0] / SATURN_RINGS_R[1]) * k;
         const saturn = astres[7].position;
 
         const x = saturn.x + Math.cos(j * ANGLE_TO_RAD) * r * zoom;
