@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { ANGLE_TO_RAD, COLORS, COMMANDS_TEXT, DISTANCES, INCLINATIONS, MAX_SPEED_RATIO, PERIODES, PROJECT_LINK_TEXT, RAYONS } from './constants';
+import { ANGLE_TO_RAD, CAMERA_INIT, COLORS, COMMANDS_TEXT, DISTANCES, INCLINATIONS, MAX_SPEED_RATIO, PERIODES, PROJECT_LINK_TEXT, RAYONS, SATURN_RINGS_COLORS, ZOOM_INIT } from './constants';
+import { orbital_path, saturn_rings } from './gen_orbital_path';
 
 // initialisations
 const scene = new THREE.Scene();
@@ -14,8 +15,18 @@ let text_panel = document.createElement("div");
 text_panel.className = "panel";
 document.body.appendChild(text_panel);
 
-// basics
+
+// mutable data
+let angle = 0.;
+let zoom = ZOOM_INIT;
+let speed_time = 1;
+let scale = false;
+
+
+// meshes arrays
 let astres = []
+let lines = []
+let saturn_rings_lines = []
 
 // gen meshes
 for (let i = 0; i < 10; i++) {
@@ -24,6 +35,27 @@ for (let i = 0; i < 10; i++) {
     const material = new THREE.MeshBasicMaterial( { color: COLORS[i] } );
     const mesh = new THREE.Mesh( geometry, material );
     astres.push(mesh);
+}
+
+
+// gen lines
+for (let i = 1; i < 10; i++) {
+
+    const material_line = new THREE.LineBasicMaterial( { color: COLORS[i] } );
+    const geometry_line = new THREE.BufferGeometry().setFromPoints( orbital_path(i, zoom, astres) );
+    const line = new THREE.Line( geometry_line, material_line );
+    lines.push(line);
+
+}
+
+// gen saturn rings
+const material_saturn_rings = new THREE.LineBasicMaterial( { color: SATURN_RINGS_COLORS } );
+
+for (let i = 1; i < 30; i++) {
+
+    const geometry_line = new THREE.BufferGeometry().setFromPoints( saturn_rings(i, zoom, astres) );
+    const line = new THREE.Line( geometry_line, material_saturn_rings );
+    saturn_rings_lines.push(line);
 
 }
 
@@ -32,20 +64,25 @@ for (let i = 0; i < 10; i++) {
 for (let i = 0; i < astres.length; i++) {
    
     scene.add(astres[i]);
+
+    if (i !== 9)
+    {
+        scene.add(lines[i]);
+    }
+}
+
+// add saturns rings to scene
+for (let i = 1; i < saturn_rings_lines.length; i++) {
     
+    scene.add(saturn_rings_lines[i]);
 }
 
 // pre translations
-camera.position.z = 40;
-camera.position.y = 10;
+camera.position.z = CAMERA_INIT.z;
+camera.position.y = CAMERA_INIT.y;
 
 
-// mutable data
-let angle = 0.;
-let zoom = 1;
 let follow_astre = astres[3].position;
-let speed_time = 1;
-
 
 function animate() {   
 	const t0 = performance.now();
@@ -84,6 +121,32 @@ function animate() {
 
         astres[i].scale.set(zoom, zoom, zoom);
 
+
+        if (scale)
+        {
+            for (let j = 0; j < lines.length; j++) {
+            
+                const material_line = new THREE.LineBasicMaterial( { color: COLORS[j] } )
+                const geometry_line = new THREE.BufferGeometry().setFromPoints( orbital_path(j, zoom, astres) );
+                const line = new THREE.Line( geometry_line, material_line );
+        
+                scene.remove(lines[j])
+                lines[j] = line;
+                scene.add(lines[j]);
+            }
+            scale = false;
+        }
+
+
+        for (let j = 0; j < saturn_rings_lines.length; j++) {
+
+            const geometry_line = new THREE.BufferGeometry().setFromPoints( saturn_rings(j, zoom, astres) );
+            const line = new THREE.Line( geometry_line, material_saturn_rings );
+
+            scene.remove(saturn_rings_lines[j])
+            saturn_rings_lines[j] = line;
+            scene.add(saturn_rings_lines[j]);        
+        }
     }
 
 
@@ -93,6 +156,9 @@ function animate() {
 
     // on observe l'astre demandé
     camera.lookAt(new THREE.Vector3(follow_astre.x, follow_astre.y, follow_astre.z));
+    camera.position.x = follow_astre.x + CAMERA_INIT.x;
+    camera.position.y = follow_astre.y + CAMERA_INIT.y;
+    camera.position.z = follow_astre.z + CAMERA_INIT.z;
 
 
     angle += 2;
@@ -121,9 +187,11 @@ window.addEventListener("keypress", (event) => {
     switch (event.code) {
         case 'KeyW':
             zoom += .1;
+            scale = true;
             break;
         case 'KeyS':
             zoom -= 0.1;
+            scale = true;
             break;
         case 'Digit0':
             follow_astre = astres[0].position;

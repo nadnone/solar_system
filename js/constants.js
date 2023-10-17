@@ -165,6 +165,20 @@ const PROJECT_LINK_TEXT = `<br/></br>### Infos Project ###<br/>
 const MAX_SPEED_RATIO = 60;
 const ANGLE_TO_RAD = Math.PI/180;
 
+const SATURN_RINGS_R = [
+    66900,
+    6000000,	
+];
+const SATURN_RINGS_INCLINATATION = 26.7;
+const SATURN_RINGS_COLORS = "#00698a";
+
+const ZOOM_INIT = 1;
+const CAMERA_INIT = {
+    "x": 0,
+    "y": 10,
+    "z": 50
+}
+
 export { 
     PERIODES,
     DISTANCES,
@@ -174,5 +188,10 @@ export {
     COMMANDS_TEXT,
     PROJECT_LINK_TEXT,
     MAX_SPEED_RATIO,
-    ANGLE_TO_RAD
+    ANGLE_TO_RAD,
+    SATURN_RINGS_R,
+    SATURN_RINGS_INCLINATATION,
+    SATURN_RINGS_COLORS,
+    ZOOM_INIT,
+    CAMERA_INIT
 }
