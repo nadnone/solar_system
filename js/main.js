@@ -25,6 +25,7 @@ document.body.appendChild(astre_panel);
 let zoom = ZOOM_INIT;
 let speed_time = 1;
 let scale = false;
+let digit = 3;
 
 
 // meshes arrays
@@ -98,7 +99,7 @@ camera.position.z = CAMERA_INIT.z;
 camera.position.y = CAMERA_INIT.y;
 
 
-let follow_astre = astres[3].position;
+let follow_astre = astres[digit].position;
 
 function animate() {   
 	const t0 = performance.now(); // Omega test
@@ -212,7 +213,6 @@ window.addEventListener("resize", () => {
 
 window.addEventListener("keypress", (event) => {
 
-    let digit = 0;
 
     switch (event.code) {
         case 'KeyW':
