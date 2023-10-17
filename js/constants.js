@@ -6,6 +6,7 @@ const SOLEIL_RAYON = 696340 * RATIO_RAYON / 10; // millions de km / 10
 const SOLEIL_DIST = 0;
 const SOLEIL_PERIODE = 0;
 const SOLEIL_COLOR = "#FDB813";
+const SOLEIL_INTENSITY = 10**4;
 
 const MERCURE_PERIODE = 88 * RADIO_PERIODE // Jours
 const MERCURE_DIST = 58 * RATIO_DIST; // Millions de km
@@ -176,8 +177,13 @@ const ZOOM_INIT = 1;
 const CAMERA_INIT = {
     "x": 0,
     "y": 10,
-    "z": 50
+    "z": 30
 }
+
+const STANDARD_EMISSIVE = 1/32;
+const SUN_EMISSIVE = 1;
+
+const FPS = 1/60;
 
 export { 
     PERIODES,
@@ -193,5 +199,9 @@ export {
     SATURN_RINGS_INCLINATATION,
     SATURN_RINGS_COLORS,
     ZOOM_INIT,
-    CAMERA_INIT
+    CAMERA_INIT,
+    SOLEIL_INTENSITY,
+    STANDARD_EMISSIVE,
+    SUN_EMISSIVE,
+    FPS
 }

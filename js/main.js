@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { ANGLE_TO_RAD, CAMERA_INIT, COLORS, COMMANDS_TEXT, DISTANCES, INCLINATIONS, MAX_SPEED_RATIO, PERIODES, PROJECT_LINK_TEXT, RAYONS, SATURN_RINGS_COLORS, ZOOM_INIT } from './constants';
+import { ANGLE_TO_RAD, CAMERA_INIT, COLORS, COMMANDS_TEXT, DISTANCES, FPS, INCLINATIONS, MAX_SPEED_RATIO, PERIODES, PROJECT_LINK_TEXT, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SUN_EMISSIVE, ZOOM_INIT } from './constants';
 import { orbital_path, saturn_rings } from './gen_orbital_path';
 
 // initialisations
@@ -15,9 +15,7 @@ let text_panel = document.createElement("div");
 text_panel.className = "panel";
 document.body.appendChild(text_panel);
 
-
 // mutable data
-let angle = 0.;
 let zoom = ZOOM_INIT;
 let speed_time = 1;
 let scale = false;
@@ -28,11 +26,21 @@ let astres = []
 let lines = []
 let saturn_rings_lines = []
 
+// sun light init
+let sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY, (DISTANCES[9] + RAYONS[0]) * zoom  );
+scene.add(sunLight);
+
 // gen meshes
 for (let i = 0; i < 10; i++) {
    
     const geometry = new THREE.SphereGeometry(RAYONS[i], 32, 32);
-    const material = new THREE.MeshBasicMaterial( { color: COLORS[i] } );
+    let material = new THREE.MeshLambertMaterial( { color: COLORS[i], emissive: COLORS[i], emissiveIntensity: STANDARD_EMISSIVE } );
+
+    if (i === 0) // for the sun
+    {
+        material = new THREE.MeshLambertMaterial( { color: COLORS[i], emissive: COLORS[i], emissiveIntensity: SUN_EMISSIVE } );
+    }
+
     const mesh = new THREE.Mesh( geometry, material );
     astres.push(mesh);
 }
@@ -85,15 +93,19 @@ camera.position.y = CAMERA_INIT.y;
 let follow_astre = astres[3].position;
 
 function animate() {   
-	const t0 = performance.now();
+	const t0 = performance.now(); // Omega test
 
-    requestAnimationFrame( animate );
-	renderer.render( scene, camera );
-
-    
     const t = (Date.now() / 100 % 10000); // secondes écoulées
     const angle_t = t * speed_time // angle du temps
 
+	renderer.render( scene, camera );
+
+    // sun light effect
+    scene.remove(sunLight);
+    sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY * zoom, (DISTANCES[9] + RAYONS[0]) * zoom );
+    sunLight.position.set(0, 0, 0);
+    scene.add(sunLight);
+    
 
     // on commence à 1 pour passer le soleil
     for (let i = 1; i < astres.length; i++) {
@@ -106,12 +118,12 @@ function animate() {
         if (i !== 4) // sauf la lune
         {   
             // rayon 0 car celui du soleil
-            r = RAYONS[0] + DISTANCES[i];
+            r = RAYONS[0] + DISTANCES[i] + RAYONS[i];
         }
         else // pour la lune
         {
             // la lune : rayon 3 pour la terre
-            r = RAYONS[3] + DISTANCES[i];
+            r = RAYONS[3] + DISTANCES[i] + RAYONS[i];
             add_pos = astres[3].position
         }
 
@@ -161,26 +173,25 @@ function animate() {
     camera.position.z = follow_astre.z + CAMERA_INIT.z;
 
 
-    angle += 2;
-    angle %= 360;
+    const t1 = performance.now(); // Omega test
 
-    const t1 = performance.now();
-    if (angle % 45 === 0)
-    {
-        text_panel.innerText = COMMANDS_TEXT;
-        text_panel.innerText += `\n\n### Info system ###
-            Speed: 1s = ~${(speed_time*30).toFixed(0)} Days
+    text_panel.innerText = COMMANDS_TEXT;
+    text_panel.innerText += `\n\n### Info system ###
+        Speed: 1s = ~${(speed_time*30).toFixed(0)} Days
 
-            [DEBUG]
-            Benchmark time: ~${(t1 - t0).toFixed(3)}
-            Time: ${(t).toFixed(0)} seconds
-            Virtual Time: ${(angle_t).toFixed(0)} Days
-        `;
-        text_panel.innerHTML += PROJECT_LINK_TEXT;
+        [DEBUG]
+        Benchmark time: ~${(t1 - t0).toFixed(3)} ms
+        Time: ${(t).toFixed(0)} seconds
+        Virtual Time: ${(angle_t).toFixed(0)} Days
+    `;
+    text_panel.innerHTML += PROJECT_LINK_TEXT;
       
-    }
 }
 
+
+window.addEventListener("resize", () => {
+    renderer.setSize( window.innerWidth, window.innerHeight );
+});
 
 window.addEventListener("keypress", (event) => {
 
@@ -251,6 +262,6 @@ window.addEventListener("keypress", (event) => {
 
 });
 
-animate();
+setInterval(animate, FPS);
 
 
