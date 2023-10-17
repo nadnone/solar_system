@@ -14,3 +14,13 @@
 a:visited, a {
     color: rgb(10, 231, 3)
 }
+
+.name_astre {
+    position: absolute;
+    font-size: 24pt;
+    color: white;
+    width: 100pt;
+    height: 24pt;
+    top: 0;
+    left: calc(50% - 10pt);
+}

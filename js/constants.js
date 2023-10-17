@@ -127,6 +127,19 @@ const INCLINATIONS = [
     NEPTUNE_INCLINAISON
 ]
 
+const ASTRES_NAMES = [
+    "Sun",
+    "Mercury",
+    "Venus",
+    "Earth",
+    "Moon",
+    "Mars",
+    "Jupiter",
+    "Saturn",
+    "Uranus",
+    "Neptune"  
+];
+
 
 const COMMANDS_TEXT = `
     ### Stars/Planets Keys ###
@@ -140,7 +153,7 @@ const COMMANDS_TEXT = `
     6: Jupiter
     7: Saturn
     8: Uranus
-    9: Neptun
+    9: Neptune
 
     ### Zoom Keys ###
 
@@ -203,5 +216,6 @@ export {
     SOLEIL_INTENSITY,
     STANDARD_EMISSIVE,
     SUN_EMISSIVE,
-    FPS
+    FPS,
+    ASTRES_NAMES
 }

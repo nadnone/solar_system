@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { ANGLE_TO_RAD, DISTANCES, INCLINATIONS, RAYONS, SATURN_RINGS_INCLINATATION, SATURN_RINGS_R } from './constants.js';
 
-function orbital_path(k, zoom, astres)
+function orbital_path(k, zoom)
 {
     let points = [];
 

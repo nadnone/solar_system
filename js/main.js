@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { ANGLE_TO_RAD, CAMERA_INIT, COLORS, COMMANDS_TEXT, DISTANCES, FPS, INCLINATIONS, MAX_SPEED_RATIO, PERIODES, PROJECT_LINK_TEXT, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SUN_EMISSIVE, ZOOM_INIT } from './constants';
+import { ANGLE_TO_RAD, ASTRES_NAMES, CAMERA_INIT, COLORS, COMMANDS_TEXT, DISTANCES, FPS, INCLINATIONS, MAX_SPEED_RATIO, PERIODES, PROJECT_LINK_TEXT, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SUN_EMISSIVE, ZOOM_INIT } from './constants';
 import { orbital_path, saturn_rings } from './gen_orbital_path';
 
 // initialisations
@@ -15,6 +15,12 @@ let text_panel = document.createElement("div");
 text_panel.className = "panel";
 document.body.appendChild(text_panel);
 
+// panel Astre name
+let astre_panel = document.createElement("div");
+astre_panel.className = "name_astre";
+astre_panel.innerText = ASTRES_NAMES[3];
+document.body.appendChild(astre_panel);
+
 // mutable data
 let zoom = ZOOM_INIT;
 let speed_time = 1;
@@ -29,6 +35,8 @@ let saturn_rings_lines = []
 // sun light init
 let sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY, (DISTANCES[9] + RAYONS[0]) * zoom  );
 scene.add(sunLight);
+
+let tick = 0;
 
 // gen meshes
 for (let i = 0; i < 10; i++) {
@@ -50,7 +58,7 @@ for (let i = 0; i < 10; i++) {
 for (let i = 1; i < 10; i++) {
 
     const material_line = new THREE.LineBasicMaterial( { color: COLORS[i] } );
-    const geometry_line = new THREE.BufferGeometry().setFromPoints( orbital_path(i, zoom, astres) );
+    const geometry_line = new THREE.BufferGeometry().setFromPoints( orbital_path(i, zoom) );
     const line = new THREE.Line( geometry_line, material_line );
     lines.push(line);
 
@@ -173,27 +181,38 @@ function animate() {
     camera.position.z = follow_astre.z + CAMERA_INIT.z;
 
 
+    
+
     const t1 = performance.now(); // Omega test
 
-    text_panel.innerText = COMMANDS_TEXT;
-    text_panel.innerText += `\n\n### Info system ###
-        Speed: 1s = ~${(speed_time*30).toFixed(0)} Days
+    if (tick > 3)
+    {
+        text_panel.innerText = COMMANDS_TEXT;
+        text_panel.innerText += `\n\n### Info system ###
+            Speed: 1s = ~${(speed_time*30).toFixed(0)} Days
+    
+            [DEBUG]
+            Benchmark time: ~${(t1 - t0).toFixed(3)} ms
+            Time: ${(t).toFixed(0)} seconds
+            Virtual Time: ${(angle_t).toFixed(0)} Days
+        `;
+        text_panel.innerHTML += PROJECT_LINK_TEXT;
+    
+    }
 
-        [DEBUG]
-        Benchmark time: ~${(t1 - t0).toFixed(3)} ms
-        Time: ${(t).toFixed(0)} seconds
-        Virtual Time: ${(angle_t).toFixed(0)} Days
-    `;
-    text_panel.innerHTML += PROJECT_LINK_TEXT;
+    tick += FPS;
+    tick %= 10;
       
 }
 
 
 window.addEventListener("resize", () => {
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    window.location.reload();
 });
 
 window.addEventListener("keypress", (event) => {
+
+    let digit = 0;
 
     switch (event.code) {
         case 'KeyW':
@@ -204,35 +223,36 @@ window.addEventListener("keypress", (event) => {
             zoom -= 0.1;
             scale = true;
             break;
+            
         case 'Digit0':
-            follow_astre = astres[0].position;
+            digit = 0;
             break;
         case 'Digit1':
-            follow_astre = astres[1].position;
+            digit = 1;
             break;
         case 'Digit2':
-            follow_astre = astres[2].position;
+            digit = 2;
             break;
         case 'Digit3':
-            follow_astre = astres[3].position;
+            digit = 3;
             break;
         case 'Digit4':
-            follow_astre = astres[4].position;
+            digit = 4;
             break;
         case 'Digit5':
-            follow_astre = astres[5].position;
+            digit = 5;
             break;
         case 'Digit6':
-            follow_astre = astres[6].position;
+            digit = 6;
             break;
         case 'Digit7':
-            follow_astre = astres[7].position;
+            digit = 7;
             break;
         case 'Digit8':
-            follow_astre = astres[8].position;
+            digit = 8;
             break;
         case 'Digit9':
-            follow_astre = astres[9].position;
+            digit = 9;
             break;
 
         case 'KeyA':
@@ -259,6 +279,9 @@ window.addEventListener("keypress", (event) => {
     {
         speed_time = MAX_SPEED_RATIO;
     }
+
+    follow_astre = astres[digit].position;
+    astre_panel.innerText = ASTRES_NAMES[digit];
 
 });
 
