@@ -1,6 +1,8 @@
 import * as THREE from 'three';
-import { ANGLE_TO_RAD, ASTRES_NAMES, CAMERA_INIT_DIST, COLORS, COMMANDS_TEXT, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, PROJECT_LINK_TEXT, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SUN_EMISSIVE, SCALE_RATIO_INIT, INIT_SPEED_RATIO } from './constants';
+import { ANGLE_TO_RAD, CAMERA_INIT_DIST, COLORS, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SCALE_RATIO_INIT, INIT_SPEED_RATIO } from './constants';
 import { orbital_path, saturn_rings } from './gen_orbital_path';
+import { TEXTURES } from './textures';
+import { ASTRES_NAMES, COMMANDS_TEXT, PROJECT_LINK_TEXT } from './panel_texts';
 
 // initialisations
 const scene = new THREE.Scene();
@@ -21,12 +23,12 @@ astre_panel.className = "name_astre";
 astre_panel.innerText = ASTRES_NAMES[INITIAL_ASTRE];
 document.body.appendChild(astre_panel);
 
+
 // mutable data
 let scale_ratio = SCALE_RATIO_INIT;
 let speed_time_ratio = INIT_SPEED_RATIO;
 let scale_state = false;
 let digit_astre = INITIAL_ASTRE;
-
 
 // meshes arrays
 let astres = []
@@ -34,7 +36,7 @@ let lines = []
 let saturn_rings_lines = []
 
 // sun light init
-let sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY, (DISTANCES[9] + RAYONS[0]) * scale_ratio  );
+let sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY * scale_ratio, (DISTANCES[9] + RAYONS[0]) * scale_ratio  );
 scene.add(sunLight);
 
 let tick = 0;
@@ -43,11 +45,11 @@ for (let i = 0; i < 10; i++) {
    
     // gen meshes
     const geometry = new THREE.SphereGeometry(RAYONS[i], 32, 32);
-    let material = new THREE.MeshLambertMaterial( { color: COLORS[i], emissive: COLORS[i], emissiveIntensity: STANDARD_EMISSIVE } );
+    let material = new THREE.MeshLambertMaterial( { map: TEXTURES[i], emissive: COLORS[i], emissiveIntensity: STANDARD_EMISSIVE } );
 
     if (i === 0) // for the sun
     {
-        material = new THREE.MeshLambertMaterial( { color: COLORS[i], emissive: COLORS[i], emissiveIntensity: SUN_EMISSIVE } );
+        material = new THREE.MeshBasicMaterial( { map: TEXTURES[i] } );
     }
 
     const mesh = new THREE.Mesh( geometry, material );
@@ -74,7 +76,6 @@ for (let i = 1; i < 30; i++) {
     saturn_rings_lines.push(line);
 
 }
-
 
 // add to scene
 for (let i = 0; i < astres.length; i++) {

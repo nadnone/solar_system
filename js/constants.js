@@ -6,7 +6,7 @@ const SOLEIL_RAYON = 696340 * RATIO_RAYON; //  km
 const SOLEIL_DIST = 0;
 const SOLEIL_PERIODE = 0;
 const SOLEIL_COLOR = "#FDB813";
-const SOLEIL_INTENSITY = 50**4;
+const SOLEIL_INTENSITY = 5*10**4;
 
 const MERCURE_PERIODE = 88 * RATIO_PERIODE // Jours
 const MERCURE_DIST = 58 * RATIO_DIST; // Millions de km
@@ -47,8 +47,8 @@ const JUPITER_INCLINAISON = 3.13;
 const SATURNE_PERIODE = 29.5*365 * RATIO_PERIODE
 const SATURNE_DIST = 1430 * RATIO_DIST;
 const SATURNE_RAYON = 58232 * RATIO_RAYON; //  de km
-const SATURE_COLOR = "#ceb8b8";
-const SATURE_INCLINAISON = 27;
+const SATURNE_COLOR = "#ceb8b8";
+const SATURNE_INCLINAISON = 27;
 
 const URANUS_PERIODE = 84*365 * RATIO_PERIODE
 const URANUS_DIST = 2800 * RATIO_DIST;
@@ -109,7 +109,7 @@ const COLORS = [
     LUNE_COLOR,
     MARS_COLOR,
     JUPITER_COLOR,
-    SATURE_COLOR,
+    SATURNE_COLOR,
     URANUS_COLOR,
     NEPTUNE_COLOR
 ]
@@ -122,59 +122,14 @@ const INCLINATIONS = [
     LUNE_INCLINAISON_TERRE,
     MARS_INCLINAISON,
     JUPITER_INCLINAISON,
-    SATURE_INCLINAISON,
+    SATURNE_INCLINAISON,
     URANUS_INCLINAISON,
     NEPTUNE_INCLINAISON
 ]
 
-const ASTRES_NAMES = [
-    "Sun",
-    "Mercury",
-    "Venus",
-    "Earth",
-    "Moon",
-    "Mars",
-    "Jupiter",
-    "Saturn",
-    "Uranus",
-    "Neptune"  
-];
-
-
-const COMMANDS_TEXT = `
-    ### Stars/Planets Keys ###
-    0: Sun
-    1: Mercury
-    2: Venus
-    3: Earth
-    4: Moon
-    5: Mars
-    6: Jupiter
-    7: Saturn
-    8: Uranus
-    9: Neptune
-
-    ### Scale Keys ###
-    W: scale + 1
-    S: scale - 1
-
-    ### Speed Keys ###
-    A: Speed * 2 
-    D: Speed / 2
-
-    ### MISC ###
-    F5: Reset All
-`;
-
-                    
-const PROJECT_LINK_TEXT = `<br/></br>### Infos Project ###<br/>
-    <a href='https://github.com/nadnone/solar_system' target='_blank'>Source code</a></br>
-    <a href='https://github.com/nadnone/' target='_blank'>GitHub Profile Page</a></br>
-    <a href='https://nadnone.github.io' target='_blank'>Nadfolio (Portfolio)</a>
-`;
 
 const INIT_SPEED_RATIO = 1;
-const MAX_SPEED_RATIO = 365;
+const MAX_SPEED_RATIO = 365*6;
 const ANGLE_TO_RAD = Math.PI/180;
 
 const SATURN_RINGS_R = [
@@ -193,7 +148,6 @@ const CAMERA_INIT_DIST = {
 }
 
 const STANDARD_EMISSIVE = 1/32;
-const SUN_EMISSIVE = 1;
 
 const FPS = 1/60;
 
@@ -203,8 +157,6 @@ export {
     RAYONS,
     COLORS,
     INCLINATIONS,
-    COMMANDS_TEXT,
-    PROJECT_LINK_TEXT,
     MAX_SPEED_RATIO,
     ANGLE_TO_RAD,
     SATURN_RINGS_R,
@@ -213,9 +165,7 @@ export {
     SCALE_RATIO_INIT,
     SOLEIL_INTENSITY,
     STANDARD_EMISSIVE,
-    SUN_EMISSIVE,
     FPS,
-    ASTRES_NAMES,
     CAMERA_INIT_DIST,
     INITIAL_ASTRE,
     INIT_SPEED_RATIO
