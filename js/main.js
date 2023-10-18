@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { ANGLE_TO_RAD, ASTRES_NAMES, CAMERA_INIT_DIST, COLORS, COMMANDS_TEXT, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, PROJECT_LINK_TEXT, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SUN_EMISSIVE, ZOOM_INIT } from './constants';
+import { ANGLE_TO_RAD, ASTRES_NAMES, CAMERA_INIT_DIST, COLORS, COMMANDS_TEXT, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, PROJECT_LINK_TEXT, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SUN_EMISSIVE, SCALE_RATIO_INIT } from './constants';
 import { orbital_path, saturn_rings } from './gen_orbital_path';
 
 // initialisations
@@ -18,13 +18,13 @@ document.body.appendChild(text_panel);
 // panel Astre name
 let astre_panel = document.createElement("div");
 astre_panel.className = "name_astre";
-astre_panel.innerText = ASTRES_NAMES[3];
+astre_panel.innerText = ASTRES_NAMES[INITIAL_ASTRE];
 document.body.appendChild(astre_panel);
 
 // mutable data
-let zoom = ZOOM_INIT;
+let scale_ratio = SCALE_RATIO_INIT;
 let speed_time = 1;
-let scale = false;
+let scale_state = false;
 let digit_astre = INITIAL_ASTRE;
 
 
@@ -34,14 +34,14 @@ let lines = []
 let saturn_rings_lines = []
 
 // sun light init
-let sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY, (DISTANCES[9] + RAYONS[0]) * zoom  );
+let sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY, (DISTANCES[9] + RAYONS[0]) * scale_ratio  );
 scene.add(sunLight);
 
 let tick = 0;
 
-// gen meshes
 for (let i = 0; i < 10; i++) {
    
+    // gen meshes
     const geometry = new THREE.SphereGeometry(RAYONS[i], 32, 32);
     let material = new THREE.MeshLambertMaterial( { color: COLORS[i], emissive: COLORS[i], emissiveIntensity: STANDARD_EMISSIVE } );
 
@@ -52,16 +52,15 @@ for (let i = 0; i < 10; i++) {
 
     const mesh = new THREE.Mesh( geometry, material );
     astres.push(mesh);
-}
 
-
-// gen lines
-for (let i = 1; i < 10; i++) {
-
-    const material_line = new THREE.LineBasicMaterial( { color: COLORS[i] } );
-    const geometry_line = new THREE.BufferGeometry().setFromPoints( orbital_path(i, zoom) );
-    const line = new THREE.Line( geometry_line, material_line );
-    lines.push(line);
+    // gen lines
+    if (i > 0)
+    {
+        const material_line = new THREE.LineBasicMaterial( { color: COLORS[i] } );
+        const geometry_line = new THREE.BufferGeometry().setFromPoints( orbital_path(i, scale_ratio) );
+        const line = new THREE.Line( geometry_line, material_line );
+        lines.push(line);
+    }
 
 }
 
@@ -70,7 +69,7 @@ const material_saturn_rings = new THREE.LineBasicMaterial( { color: SATURN_RINGS
 
 for (let i = 1; i < 30; i++) {
 
-    const geometry_line = new THREE.BufferGeometry().setFromPoints( saturn_rings(i, zoom, astres) );
+    const geometry_line = new THREE.BufferGeometry().setFromPoints( saturn_rings(i, scale_ratio, astres) );
     const line = new THREE.Line( geometry_line, material_saturn_rings );
     saturn_rings_lines.push(line);
 
@@ -105,7 +104,7 @@ function animate() {
 
     // sun light effect
     scene.remove(sunLight);
-    sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY * zoom, (DISTANCES[9] + RAYONS[0]) * zoom );
+    sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY * scale_ratio, (DISTANCES[9] + RAYONS[0]) * scale_ratio );
     sunLight.position.set(0, 0, 0);
     scene.add(sunLight);
     
@@ -129,32 +128,33 @@ function animate() {
             add_pos = astres[3].position
         }
 
-        astres[i].position.x = add_pos.x + Math.cos(phi * ANGLE_TO_RAD) * r * zoom;
-        astres[i].position.z = add_pos.z + Math.sin(phi * ANGLE_TO_RAD) * r * zoom;
-        astres[i].position.y = add_pos.y + Math.cos(phi * ANGLE_TO_RAD) * Math.sin(INCLINATIONS[i] * ANGLE_TO_RAD)* r * zoom;
+        astres[i].position.x = add_pos.x + Math.cos(phi * ANGLE_TO_RAD) * r * scale_ratio;
+        astres[i].position.z = add_pos.z + Math.sin(phi * ANGLE_TO_RAD) * r * scale_ratio;
+        astres[i].position.y = add_pos.y + Math.cos(phi * ANGLE_TO_RAD) * Math.sin(INCLINATIONS[i] * ANGLE_TO_RAD)* r * scale_ratio;
 
-        astres[i].scale.set(zoom, zoom, zoom);
+        astres[i].scale.set(scale_ratio, scale_ratio, scale_ratio);
 
 
-        if (scale)
+        if (scale_state)
         {
             for (let j = 0; j < lines.length; j++) {
             
-                const material_line = new THREE.LineBasicMaterial( { color: COLORS[j] } )
-                const geometry_line = new THREE.BufferGeometry().setFromPoints( orbital_path(j, zoom, astres) );
+                // j + 1 car décalage, on compte sans le soleil
+                const material_line = new THREE.LineBasicMaterial( { color: COLORS[j+1] } )
+                const geometry_line = new THREE.BufferGeometry().setFromPoints( orbital_path(j+1, scale_ratio, astres) );
                 const line = new THREE.Line( geometry_line, material_line );
         
                 scene.remove(lines[j])
                 lines[j] = line;
                 scene.add(lines[j]);
             }
-            scale = false;
+            scale_state = false;
         }
 
 
         for (let j = 0; j < saturn_rings_lines.length; j++) {
 
-            const geometry_line = new THREE.BufferGeometry().setFromPoints( saturn_rings(j, zoom, astres) );
+            const geometry_line = new THREE.BufferGeometry().setFromPoints( saturn_rings(j, scale_ratio, astres) );
             const line = new THREE.Line( geometry_line, material_saturn_rings );
 
             scene.remove(saturn_rings_lines[j])
@@ -165,9 +165,9 @@ function animate() {
 
             // on observe l'astre demandé
             camera.lookAt(astres[digit_astre].position);
-            camera.position.x = astres[digit_astre].position.x + RAYONS[digit_astre] * zoom + CAMERA_INIT_DIST.x
-            camera.position.y = astres[digit_astre].position.y + RAYONS[digit_astre] * zoom + CAMERA_INIT_DIST.y
-            camera.position.z = astres[digit_astre].position.z + RAYONS[digit_astre] * zoom + CAMERA_INIT_DIST.z
+            camera.position.x = astres[digit_astre].position.x + RAYONS[digit_astre] * scale_ratio + CAMERA_INIT_DIST.x
+            camera.position.y = astres[digit_astre].position.y + RAYONS[digit_astre] * scale_ratio + CAMERA_INIT_DIST.y
+            camera.position.z = astres[digit_astre].position.z + RAYONS[digit_astre] * scale_ratio + CAMERA_INIT_DIST.z
 
             
     }
@@ -184,10 +184,10 @@ function animate() {
 
     const t1 = performance.now(); // Omega test
 
-    if (tick > 3)
+    if (tick > 1)
     {
         text_panel.innerText = COMMANDS_TEXT;
-        text_panel.innerText += `\n\n### Info system ###
+        text_panel.innerText += `\n### System info ###
             Speed: 1s = ~${(speed_time*30).toFixed(0)} Days
     
             [DEBUG]
@@ -214,12 +214,12 @@ window.addEventListener("keypress", (event) => {
 
     switch (event.code) {
         case 'KeyW':
-            zoom += 1;
-            scale = true;
+            scale_ratio += 1;
+            scale_state = true;
             break;
         case 'KeyS':
-            zoom -= 1;
-            scale = true;
+            scale_ratio -= 1;
+            scale_state = true;
             break;
             
         case 'Digit0':
@@ -265,9 +265,9 @@ window.addEventListener("keypress", (event) => {
             break;
     }
 
-    if (zoom < 1)
+    if (scale_ratio < 1)
     {
-        zoom = 1;
+        scale_ratio = 1;
     }
     
     if (speed_time < 1/30)

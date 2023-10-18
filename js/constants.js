@@ -143,7 +143,6 @@ const ASTRES_NAMES = [
 
 const COMMANDS_TEXT = `
     ### Stars/Planets Keys ###
-            
     0: Sun
     1: Mercury
     2: Venus
@@ -155,8 +154,7 @@ const COMMANDS_TEXT = `
     8: Uranus
     9: Neptune
 
-    ### Zoom Keys ###
-
+    ### Scale Keys ###
     W: scale + 1
     S: scale - 1
 
@@ -166,7 +164,6 @@ const COMMANDS_TEXT = `
 
     ### MISC ###
     F5: Reset All
-
 `;
 
                     
@@ -186,7 +183,7 @@ const SATURN_RINGS_R = [
 const SATURN_RINGS_INCLINATATION = 26.7;
 const SATURN_RINGS_COLORS = "#00698a";
 
-const ZOOM_INIT = 1;
+const SCALE_RATIO_INIT = 1;
 const INITIAL_ASTRE = 0;
 const CAMERA_INIT_DIST = {
     "x": 10,
@@ -212,7 +209,7 @@ export {
     SATURN_RINGS_R,
     SATURN_RINGS_INCLINATATION,
     SATURN_RINGS_COLORS,
-    ZOOM_INIT,
+    SCALE_RATIO_INIT,
     SOLEIL_INTENSITY,
     STANDARD_EMISSIVE,
     SUN_EMISSIVE,
