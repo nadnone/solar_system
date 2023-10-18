@@ -1,5 +1,5 @@
 const RATIO_DIST = 0.1;
-const RATIO_PERIODE = 10**(-3);
+const RATIO_PERIODE = 1/365;
 const RATIO_RAYON = 10**(-5);
 
 const SOLEIL_RAYON = 696340 * RATIO_RAYON; //  km
@@ -26,7 +26,7 @@ const TERRE_RAYON = 6371 * RATIO_RAYON; //  de km
 const TERRE_COLOR = "#0000ff";
 const TERRE_INCLINAISON = 0;
 
-const LUNE_PERIODE = 29.5 * RATIO_PERIODE
+const LUNE_PERIODE = 29.5 * RATIO_PERIODE 
 const LUNE_DIST_TERRE = 384400 * RATIO_DIST * 10**(-6); // millions de km
 const LUNE_RAYON = 1737.4 * RATIO_RAYON; // de km
 const LUNE_COLOR = "#f5f5f5";
@@ -173,7 +173,8 @@ const PROJECT_LINK_TEXT = `<br/></br>### Infos Project ###<br/>
     <a href='https://nadnone.github.io' target='_blank'>Nadfolio (Portfolio)</a>
 `;
 
-const MAX_SPEED_RATIO = 60;
+const INIT_SPEED_RATIO = 1;
+const MAX_SPEED_RATIO = 365;
 const ANGLE_TO_RAD = Math.PI/180;
 
 const SATURN_RINGS_R = [
@@ -216,5 +217,6 @@ export {
     FPS,
     ASTRES_NAMES,
     CAMERA_INIT_DIST,
-    INITIAL_ASTRE
+    INITIAL_ASTRE,
+    INIT_SPEED_RATIO
 }

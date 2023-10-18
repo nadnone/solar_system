@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { ANGLE_TO_RAD, ASTRES_NAMES, CAMERA_INIT_DIST, COLORS, COMMANDS_TEXT, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, PROJECT_LINK_TEXT, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SUN_EMISSIVE, SCALE_RATIO_INIT } from './constants';
+import { ANGLE_TO_RAD, ASTRES_NAMES, CAMERA_INIT_DIST, COLORS, COMMANDS_TEXT, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, PROJECT_LINK_TEXT, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SUN_EMISSIVE, SCALE_RATIO_INIT, INIT_SPEED_RATIO } from './constants';
 import { orbital_path, saturn_rings } from './gen_orbital_path';
 
 // initialisations
@@ -23,7 +23,7 @@ document.body.appendChild(astre_panel);
 
 // mutable data
 let scale_ratio = SCALE_RATIO_INIT;
-let speed_time = 1;
+let speed_time_ratio = INIT_SPEED_RATIO;
 let scale_state = false;
 let digit_astre = INITIAL_ASTRE;
 
@@ -93,12 +93,13 @@ for (let i = 1; i < saturn_rings_lines.length; i++) {
     scene.add(saturn_rings_lines[i]);
 }
 
+let t = performance.now() / 1000;
 
 function animate() {   
 	const t0 = performance.now(); // Omega test
 
-    const t = (Date.now() / 100 % 10000); // secondes écoulées
-    const angle_t = t * speed_time // angle du temps
+    t = performance.now() / 1000;
+    const angle_t = t * speed_time_ratio // angle du temps
 
 	renderer.render( scene, camera );
 
@@ -188,12 +189,13 @@ function animate() {
     {
         text_panel.innerText = COMMANDS_TEXT;
         text_panel.innerText += `\n### System info ###
-            Speed: 1s = ~${(speed_time*30).toFixed(0)} Days
-    
+            Speed: 1s = ~${(speed_time_ratio).toFixed(2)} days
+
             [DEBUG]
             Benchmark time: ~${(t1 - t0).toFixed(3)} ms
-            Time: ${(t).toFixed(0)} seconds
-            Virtual Time: ${(angle_t).toFixed(0)} Days
+            Spent time: ${(t/3600).toFixed(0)}h ${(t/60).toFixed(0) % 60}m ${(t).toFixed(0) % 60}s
+            Virtual Time: day n°${(angle_t % 365).toFixed(0)}
+
         `;
         text_panel.innerHTML += PROJECT_LINK_TEXT;
     
@@ -254,10 +256,10 @@ window.addEventListener("keypress", (event) => {
             break;
 
         case 'KeyA':
-            speed_time *= 2
+            speed_time_ratio *= 2
             break;
         case 'KeyD':
-            speed_time /= 2
+            speed_time_ratio /= 2
             break;
     
 
@@ -270,13 +272,13 @@ window.addEventListener("keypress", (event) => {
         scale_ratio = 1;
     }
     
-    if (speed_time < 1/30)
+    if (speed_time_ratio < 1/30)
     {
-        speed_time = 1/30;
+        speed_time_ratio = 1/30;
     }
-    else if (speed_time > MAX_SPEED_RATIO)
+    else if (speed_time_ratio > MAX_SPEED_RATIO)
     {
-        speed_time = MAX_SPEED_RATIO;
+        speed_time_ratio = MAX_SPEED_RATIO;
     }
 
     astre_panel.innerText = ASTRES_NAMES[digit_astre];
