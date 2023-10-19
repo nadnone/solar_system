@@ -1,5 +1,26 @@
 import * as THREE from 'three';
-import { ANGLE_TO_RAD, DISTANCES, INCLINATIONS, RAYONS, SATURN_RINGS_INCLINATATION, SATURN_RINGS_R } from './constants.js';
+import { ANGLE_TO_RAD, DISTANCES, INCLINATIONS, RAYONS, SATURN_RINGS_INCLINATION, SATURN_RINGS_R } from './constants.js';
+
+function orbit_position_calc(ref, angle, scale_ratio, r, inclination)
+{
+    const cos_phi = Math.cos(angle * ANGLE_TO_RAD);
+    const sin_phi = Math.sin(angle * ANGLE_TO_RAD);
+
+    const cos_incl = Math.sin(inclination);
+
+    // y swaped with z
+    const x = ref.x + cos_phi * r * scale_ratio
+    const z = ref.z + sin_phi * r * scale_ratio
+    const y = ref.y + sin_phi * cos_incl * r * scale_ratio;
+    
+    // formula from there https://en.wikipedia.org/wiki/Spherical_coordinate_system
+
+    return {
+        "x": x,
+        "y": y,
+        "z": z,
+    }
+}
 
 function orbital_path(k, scale_ratio)
 {
@@ -13,12 +34,9 @@ function orbital_path(k, scale_ratio)
             // rayon 0 car celui du soleil
             const r = RAYONS[0] + DISTANCES[k] + RAYONS[k];
 
-            const x = Math.cos(j * ANGLE_TO_RAD) * r * scale_ratio;
-            const z = Math.sin(j * ANGLE_TO_RAD) * r * scale_ratio;
-            const y = Math.cos(j * ANGLE_TO_RAD) * Math.sin(INCLINATIONS[k] * ANGLE_TO_RAD)* r * scale_ratio;
-            
-            let p = new THREE.Vector3(x, y, z);
-            points.push(p);
+            const p = orbit_position_calc(new THREE.Vector3(0, 0, 0), j, scale_ratio, r, INCLINATIONS[k]);
+            const three_p = new THREE.Vector3(p.x, p.y, p.z);
+            points.push(three_p);
         }
        
     }
@@ -33,15 +51,12 @@ function saturn_rings(k, scale_ratio, astres)
     for (let j = 0; j <= 360; j+=10) {
 
         // 7 car saturne + ([0]/[1] = ratio)
-        const r = (RAYONS[7] + (SATURN_RINGS_R[0] / SATURN_RINGS_R[1]) * k) * scale_ratio;
+        const r = (RAYONS[7] + (SATURN_RINGS_R[0] / SATURN_RINGS_R[1]) * k);
         const saturn = astres[7].position;
-
-        const x = saturn.x + Math.cos(j * ANGLE_TO_RAD) * r;
-        const z = saturn.z + Math.sin(j * ANGLE_TO_RAD) * r;
-        const y = saturn.y + Math.cos(j * ANGLE_TO_RAD) * Math.sin(SATURN_RINGS_INCLINATATION * ANGLE_TO_RAD)* r;
-        
-        let p = new THREE.Vector3(x, y, z);
-        points.push(p);
+       
+        const p = orbit_position_calc(saturn, j, scale_ratio, r, SATURN_RINGS_INCLINATION);
+        const three_p = new THREE.Vector3(p.x, p.y, p.z);
+        points.push(three_p);
     }
 
 
@@ -50,5 +65,6 @@ function saturn_rings(k, scale_ratio, astres)
 
 export {
     orbital_path,
-    saturn_rings
+    saturn_rings,
+    orbit_position_calc
 }

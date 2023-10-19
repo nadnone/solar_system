@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { ANGLE_TO_RAD, CAMERA_INIT_DIST, COLORS, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SCALE_RATIO_INIT, INIT_SPEED_RATIO } from './constants';
-import { orbital_path, saturn_rings } from './gen_orbital_path';
+import { ANGLE_TO_RAD, CAMERA_INIT_DIST, COLORS, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SCALE_RATIO_INIT, INIT_SPEED_RATIO, SCALE_RATIO_MIN } from './constants';
+import { orbit_position_calc, orbital_path, saturn_rings } from './gen_orbital_path';
 import { TEXTURES } from './textures';
 import { ASTRES_NAMES, COMMANDS_TEXT, PROJECT_LINK_TEXT } from './panel_texts';
 
@@ -36,7 +36,7 @@ let lines = []
 let saturn_rings_lines = []
 
 // sun light init
-let sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY * scale_ratio, (DISTANCES[9] + RAYONS[0]) * scale_ratio  );
+let sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY * scale_ratio, 0 );
 scene.add(sunLight);
 
 let tick = 0;
@@ -130,9 +130,10 @@ function animate() {
             add_pos = astres[3].position
         }
 
-        astres[i].position.x = add_pos.x + Math.cos(phi * ANGLE_TO_RAD) * r * scale_ratio;
-        astres[i].position.z = add_pos.z + Math.sin(phi * ANGLE_TO_RAD) * r * scale_ratio;
-        astres[i].position.y = add_pos.y + Math.cos(phi * ANGLE_TO_RAD) * Math.sin(INCLINATIONS[i] * ANGLE_TO_RAD)* r * scale_ratio;
+
+        // calcul des positions
+        const p = orbit_position_calc(add_pos, phi, scale_ratio, r, INCLINATIONS[i]);
+        astres[i].position.set(p.x, p.y, p.z);   
 
         astres[i].scale.set(scale_ratio, scale_ratio, scale_ratio);
 
@@ -268,9 +269,9 @@ window.addEventListener("keypress", (event) => {
             break;
     }
 
-    if (scale_ratio < 1)
+    if (scale_ratio < SCALE_RATIO_MIN)
     {
-        scale_ratio = 1;
+        scale_ratio = SCALE_RATIO_MIN;
     }
     
     if (speed_time_ratio < 1/30)
