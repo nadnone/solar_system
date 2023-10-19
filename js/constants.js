@@ -1,8 +1,8 @@
 const ANGLE_TO_RAD = Math.PI/180;
 const RATIO_PERIODE = 1/365;
-const RATIO_RAYON = 10**(-4)
-const RATIO_DIST = 10**(-5) 
-const RATIO_LUX =  10**3;
+const RATIO_RAYON = 10**(-3)
+const RATIO_DIST = 10**(-4) 
+const RATIO_LUX =  10**4;
 
 const SOLEIL_RAYON = 696340 * RATIO_RAYON; //  km
 const SOLEIL_DIST = 0;
@@ -11,7 +11,7 @@ const SOLEIL_COLOR = "#FDB813";
 const SOLEIL_INTENSITY = 5*10**4 * RATIO_LUX
 
 const MERCURE_PERIODE = 88 * RATIO_PERIODE // Jours
-const MERCURE_DIST = 58 ; // Millions de km
+const MERCURE_DIST = 58; // Millions de km
 const MERCURE_RAYON = 2439.7  * RATIO_RAYON; // de km
 const MERCURE_COLOR = "#b1adad";
 const MERCURE_INCLINAISON = 7;
@@ -206,17 +206,20 @@ const SATURN_RINGS_R = [
 const SATURN_RINGS_INCLINATION = 26.7 * ANGLE_TO_RAD;
 const SATURN_RINGS_COLORS = "#00698a";
 
-const SCALE_RATIO_INIT = 10;
-const SCALE_RATIO_MIN = 1;
+const SCALE_RATIO_INIT = 1;
+const SCALE_RATIO_MIN = 0.05;
+const SCALE_RATIO_MAX = 10;
+
+const SCALE_STEP = 2;
+
 const INITIAL_ASTRE = 3;
 const CAMERA_INIT_DIST = {
-    "x": 10,
-    "y": 5,
-    "z": 5,
+    "x": -30,
+    "y": 0,
+    "z": 25,
 }
 
-const STANDARD_EMISSIVE = 1/64;
-
+const STANDARD_EMISSIVE = 1/32;
 const FPS = 1/60;
 
 export { 
@@ -241,4 +244,6 @@ export {
     SCALE_RATIO_MIN,
     DIST_MAX,
     DIST_MIN,
+    SCALE_STEP,
+    SCALE_RATIO_MAX
 }

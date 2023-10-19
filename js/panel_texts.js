@@ -27,8 +27,8 @@ const COMMANDS_TEXT = `
     9: Neptune
 
     ### Scale Keys ###
-    W: scale + 1
-    S: scale - 1
+    W: scale * 2
+    S: scale / 2
 
     ### Speed Keys ###
     A: Speed * 2 

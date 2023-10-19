@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 import {ANGLE_TO_RAD, DIST_MAX, DIST_MIN, EXCENTRICITIES, INCLINATIONS, PERIODES, RAYONS, SATURN_RINGS_INCLINATION, SATURN_RINGS_R } from './constants.js';
 
-function orbit_position_calc(ref, angle, scale_ratio, inclination, e, k = 0)
+function orbit_position_calc(ref, t, scale_ratio, inclination, e, k = 0)
 {
 
     // inspiré de mon précédent code ici: https://github.com/nadnone/Satellite_movement_kepler/blob/main/all.js
+
+    const angle = t / 60
 
     const SB = DIST_MAX[k]
     const OB = DIST_MIN[k] 
@@ -69,7 +71,7 @@ function saturn_rings(k, scale_ratio, astres)
     for (let angle = 0; angle <= 360 ; angle += 10) {
 
         // 7 car saturne + ([0]/[1] = ratio)
-        const r = (RAYONS[7] + (SATURN_RINGS_R[0] / SATURN_RINGS_R[1]) * k * 10);
+        const r = (RAYONS[7] + (SATURN_RINGS_R[0] / SATURN_RINGS_R[1]) * k * 100);
         const saturn = astres[7].position;
 
         const p = simple_circle_path(saturn, angle, scale_ratio, SATURN_RINGS_INCLINATION, r);

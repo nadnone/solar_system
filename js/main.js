@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CAMERA_INIT_DIST, COLORS, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SCALE_RATIO_INIT, INIT_SPEED_RATIO, SCALE_RATIO_MIN, EXCENTRICITIES } from './constants';
+import { CAMERA_INIT_DIST, COLORS, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SCALE_RATIO_INIT, INIT_SPEED_RATIO, SCALE_RATIO_MIN, EXCENTRICITIES, SCALE_STEP, SCALE_RATIO_MAX } from './constants';
 import { orbit_position_calc, orbital_path, saturn_rings } from './gen_orbital_path';
 import { TEXTURES } from './textures';
 import { ASTRES_NAMES, COMMANDS_TEXT, PROJECT_LINK_TEXT } from './panel_texts';
@@ -36,7 +36,7 @@ let lines = []
 let saturn_rings_lines = []
 
 // sun light init
-let sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY, 0 );
+let sunLight = new THREE.PointLight( 0, 0, 0 );
 scene.add(sunLight);
 
 let tick = 0;
@@ -100,12 +100,12 @@ function animate() {
 	const t0 = performance.now(); // Omega test
 
     t = performance.now() / 1000;
-    const angle_t = t * speed_time_ratio * Math.PI/360 // angle du temps
+    const angle_t = t * speed_time_ratio// angle du temps
 
 
     // sun light effect
     scene.remove(sunLight);
-    sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY * scale_ratio, 0 );
+    sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY * scale_ratio, 10**24 );
     sunLight.position.set(0, 0, 0);
     scene.add(sunLight);
     
@@ -183,7 +183,7 @@ function animate() {
             [DEBUG]
             Benchmark time: ~${(t1 - t0).toFixed(3)} ms
             Spent time: ${(t/3600).toFixed(0)}h ${(t/60).toFixed(0) % 60}m ${(t).toFixed(0) % 60}s
-            Virtual Time: day n°${(angle_t % 365).toFixed(0)}
+            Virtual Time: ~${(angle_t).toFixed(0) % 365} days
 
         `;
         text_panel.innerHTML += PROJECT_LINK_TEXT;
@@ -208,11 +208,11 @@ window.addEventListener("keypress", (event) => {
 
     switch (event.code) {
         case 'KeyW':
-            scale_ratio += 1;
+            scale_ratio *= SCALE_STEP;
             scale_state = true;
             break;
         case 'KeyS':
-            scale_ratio -= 1;
+            scale_ratio /= SCALE_STEP;
             scale_state = true;
             break;
             
@@ -262,6 +262,10 @@ window.addEventListener("keypress", (event) => {
     if (scale_ratio < SCALE_RATIO_MIN)
     {
         scale_ratio = SCALE_RATIO_MIN;
+    }
+    else if (scale_ratio > SCALE_RATIO_MAX)
+    {
+        scale_ratio = SCALE_RATIO_MAX 
     }
     
     if (speed_time_ratio < 1/30)
