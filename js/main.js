@@ -6,7 +6,7 @@ import { ASTRES_NAMES, COMMANDS_TEXT, PROJECT_LINK_TEXT } from './panel_texts';
 
 // initialisations
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 0 );
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -36,7 +36,7 @@ let lines = []
 let saturn_rings_lines = []
 
 // sun light init
-let sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY * scale_ratio, 0 );
+let sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY, 0 );
 scene.add(sunLight);
 
 let tick = 0;
@@ -100,13 +100,12 @@ function animate() {
 	const t0 = performance.now(); // Omega test
 
     t = performance.now() / 1000;
-    const angle_t = t * speed_time_ratio // angle du temps
+    const angle_t = t * speed_time_ratio * Math.PI/360 // angle du temps
 
-	renderer.render( scene, camera );
 
     // sun light effect
     scene.remove(sunLight);
-    sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY * scale_ratio, (DISTANCES[9] + RAYONS[0]) * scale_ratio );
+    sunLight = new THREE.PointLight( 0xffffff, SOLEIL_INTENSITY * scale_ratio, 0 );
     sunLight.position.set(0, 0, 0);
     scene.add(sunLight);
     
@@ -115,24 +114,15 @@ function animate() {
 
 
         const phi = angle_t / PERIODES[i]; // angle de rotation
-        let  r = 0; // rayon
         let add_pos = new THREE.Vector3(); // référenciel
 
-        if (i !== 4) // sauf la lune
-        {   
-            // rayon 0 car celui du soleil
-            r = RAYONS[0] + DISTANCES[i] + RAYONS[i];
-        }
-        else // pour la lune
+        if (i === 4) // pour la lune 
         {
-            // la lune : rayon 3 pour la terre
-            r = RAYONS[3] + DISTANCES[i] + RAYONS[i];
-            add_pos = astres[3].position
+            add_pos = astres[3].position;
         }
-
 
         // calcul des positions
-        const p = orbit_position_calc(add_pos, phi, scale_ratio, r, INCLINATIONS[i], EXCENTRICITIES[i]);
+        const p = orbit_position_calc(add_pos, phi, scale_ratio, INCLINATIONS[i], EXCENTRICITIES[i], i);
         astres[i].position.set(p.x, p.y, p.z);   
 
         astres[i].scale.set(scale_ratio, scale_ratio, scale_ratio);
@@ -153,7 +143,6 @@ function animate() {
             scale_state = false;
         }
 
-
         for (let j = 0; j < saturn_rings_lines.length; j++) {
 
             const geometry_line = new THREE.BufferGeometry().setFromPoints( saturn_rings(j, scale_ratio, astres) );
@@ -163,7 +152,6 @@ function animate() {
             saturn_rings_lines[j] = line;
             scene.add(saturn_rings_lines[j]);        
         }
-
 
             // on observe l'astre demandé
             camera.lookAt(astres[digit_astre].position);
@@ -204,6 +192,9 @@ function animate() {
 
     tick += FPS;
     tick %= 10;
+
+
+	renderer.render( scene, camera );
       
 }
 
