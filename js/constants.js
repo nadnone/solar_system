@@ -164,12 +164,12 @@ const SATURN_RINGS_R = [
 const SATURN_RINGS_INCLINATION = 26.7 * ANGLE_TO_RAD;
 const SATURN_RINGS_COLORS = "#00698a";
 
-const SCALE_RATIO_INIT = 100;
+const SCALE_RATIO_INIT = 50;
 const SCALE_RATIO_MIN = 1;
 const INITIAL_ASTRE = 3;
 const CAMERA_INIT_DIST = {
-    "x": -20,
-    "y": 10,
+    "x": -15,
+    "y": 5,
     "z": 5,
 }
 

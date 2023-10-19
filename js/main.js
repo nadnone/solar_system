@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { ANGLE_TO_RAD, CAMERA_INIT_DIST, COLORS, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SCALE_RATIO_INIT, INIT_SPEED_RATIO, SCALE_RATIO_MIN } from './constants';
+import { CAMERA_INIT_DIST, COLORS, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SCALE_RATIO_INIT, INIT_SPEED_RATIO, SCALE_RATIO_MIN, EXCENTRICITIES } from './constants';
 import { orbit_position_calc, orbital_path, saturn_rings } from './gen_orbital_path';
 import { TEXTURES } from './textures';
 import { ASTRES_NAMES, COMMANDS_TEXT, PROJECT_LINK_TEXT } from './panel_texts';
@@ -132,19 +132,18 @@ function animate() {
 
 
         // calcul des positions
-        const p = orbit_position_calc(add_pos, phi, scale_ratio, r, INCLINATIONS[i]);
+        const p = orbit_position_calc(add_pos, phi, scale_ratio, r, INCLINATIONS[i], EXCENTRICITIES[i]);
         astres[i].position.set(p.x, p.y, p.z);   
 
         astres[i].scale.set(scale_ratio, scale_ratio, scale_ratio);
 
-
         if (scale_state)
         {
-            for (let j = 0; j < lines.length; j++) {
+            for (let j = 1; j < lines.length; j++) {
             
-                // j + 1 car décalage, on compte sans le soleil
-                const material_line = new THREE.LineBasicMaterial( { color: COLORS[j+1] } )
-                const geometry_line = new THREE.BufferGeometry().setFromPoints( orbital_path(j+1, scale_ratio, astres) );
+                // j = 1 car décalage, on compte sans le soleil
+                const material_line = new THREE.LineBasicMaterial( { color: COLORS[j] } )
+                const geometry_line = new THREE.BufferGeometry().setFromPoints( orbital_path(j, scale_ratio) );
                 const line = new THREE.Line( geometry_line, material_line );
         
                 scene.remove(lines[j])
