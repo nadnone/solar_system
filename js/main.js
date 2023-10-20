@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CAMERA_INIT_DIST, COLORS, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SCALE_RATIO_INIT, INIT_SPEED_RATIO, SCALE_RATIO_MIN, EXCENTRICITIES, SCALE_STEP, SCALE_RATIO_MAX, ANGLE_TO_RAD } from './constants';
+import { CAMERA_INIT_DIST, COLORS, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SCALE_RATIO_INIT, INIT_SPEED_RATIO, SCALE_RATIO_MIN, EXCENTRICITIES, SCALE_STEP, SCALE_RATIO_MAX, ANGLE_TO_RAD, MIN_SPEED_RATIO, RATIO_PERIODE, PLANETS_DAYS } from './constants';
 import { orbit_position_calc, orbital_path, saturn_rings } from './gen_orbital_path';
 import { TEXTURES } from './textures';
 import { ASTRES_NAMES, COMMANDS_TEXT, PROJECT_LINK_TEXT } from './panel_texts';
@@ -39,15 +39,11 @@ let saturn_rings_lines = []
 let sunLight = new THREE.PointLight( 0, 0, 0 );
 scene.add(sunLight);
 
-let tick = 0;
-
 for (let i = 0; i < 10; i++) {
    
     // gen meshes
     const geometry = new THREE.SphereGeometry(RAYONS[i], 32, 32);
     let material = new THREE.MeshLambertMaterial( { map: TEXTURES[i], emissive: COLORS[i], emissiveIntensity: STANDARD_EMISSIVE } );
-
-    
 
     
 
@@ -57,6 +53,13 @@ for (let i = 0; i < 10; i++) {
     }
 
     const mesh = new THREE.Mesh( geometry, material );
+
+    
+    if (i === 3) // inclinaison temporaire de la terre
+    {
+        mesh.geometry.rotateZ(-23.4 * ANGLE_TO_RAD);
+    }
+
     astres.push(mesh);
 
     // gen lines
@@ -98,14 +101,11 @@ for (let i = 1; i < saturn_rings_lines.length; i++) {
     scene.add(saturn_rings_lines[i]);
 }
 
-let t = performance.now() / 1000;
-
+let t = 0;
 function animate() {   
 	const t0 = performance.now(); // Omega test
 
-    t = performance.now() / 1000;
-    const angle_t = t * speed_time_ratio// angle du temps
-
+    const virtual_t = t * speed_time_ratio// angle du temps
 
     // sun light effect
     scene.remove(sunLight);
@@ -117,13 +117,21 @@ function animate() {
     for (let i = 1; i < astres.length; i++) {
 
 
-        const phi = angle_t / PERIODES[i]; // angle de rotation
+        const phi = PERIODES[i]/virtual_t; // angle de rotation
         let add_pos = new THREE.Vector3(); // référenciel
 
         if (i === 4) // pour la lune 
         {
             add_pos = astres[3].position;
         }
+
+        // rotation d'une journée sur chaque planète
+        if (i > 0)
+        {
+            const day_rad = 2 * Math.PI / (phi * PLANETS_DAYS[i]) 
+            astres[i].geometry.rotateY(day_rad);
+        }
+   
 
         // calcul des positions
         const p = orbit_position_calc(add_pos, phi, scale_ratio, INCLINATIONS[i], EXCENTRICITIES[i], i);
@@ -178,24 +186,21 @@ function animate() {
 
     const t1 = performance.now(); // Omega test
 
-    if (tick > 1)
-    {
-        text_panel.innerText = COMMANDS_TEXT;
-        text_panel.innerText += `\n### System info ###
-            Speed: 1s = ~${(speed_time_ratio).toFixed(2)} days
+    t += (t1 - t0) * 100;
 
-            [DEBUG]
-            Benchmark time: ~${(t1 - t0).toFixed(3)} ms
-            Spent time: ${(t/3600).toFixed(0)}h ${(t/60).toFixed(0) % 60}m ${(t).toFixed(0) % 60}s
-            Virtual Time: ~${(angle_t).toFixed(0) % 365} days
+    text_panel.innerText = COMMANDS_TEXT;
+    text_panel.innerText += `\n### System info ###
+        Speed: x ${(speed_time_ratio).toFixed(2)}
 
-        `;
-        text_panel.innerHTML += PROJECT_LINK_TEXT;
-    
-    }
+        [DEBUG]
+        Benchmark time: ~${(t1 - t0).toFixed(3)} ms
+         Time:
+        - virtual: ~${(virtual_t).toFixed(0)} units
+        - t: ~${(t).toFixed(0)} units
 
-    tick += FPS;
-    tick %= 10;
+    `;
+    text_panel.innerHTML += PROJECT_LINK_TEXT;
+
 
 
 	renderer.render( scene, camera );
@@ -212,11 +217,11 @@ window.addEventListener("keypress", (event) => {
 
     switch (event.code) {
         case 'KeyW':
-            scale_ratio *= SCALE_STEP;
+            scale_ratio += SCALE_STEP;
             scale_state = true;
             break;
         case 'KeyS':
-            scale_ratio /= SCALE_STEP;
+            scale_ratio -= SCALE_STEP;
             scale_state = true;
             break;
             
@@ -272,9 +277,9 @@ window.addEventListener("keypress", (event) => {
         scale_ratio = SCALE_RATIO_MAX 
     }
     
-    if (speed_time_ratio < 1/30)
+    if (speed_time_ratio < MIN_SPEED_RATIO)
     {
-        speed_time_ratio = 1/30;
+        speed_time_ratio = MIN_SPEED_RATIO;
     }
     else if (speed_time_ratio > MAX_SPEED_RATIO)
     {

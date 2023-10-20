@@ -1,12 +1,16 @@
 import * as THREE from 'three';
 import {ANGLE_TO_RAD, DIST_MAX, DIST_MIN, EXCENTRICITIES, INCLINATIONS, PERIODES, RAYONS, SATURN_RINGS_INCLINATION, SATURN_RINGS_R } from './constants.js';
 
-function orbit_position_calc(ref, t, scale_ratio, inclination, e, k = 0)
+function orbit_position_calc(ref, t, scale_ratio, inclination, e, k = 0, path=false)
 {
 
     // inspiré de mon précédent code ici: https://github.com/nadnone/Satellite_movement_kepler/blob/main/all.js
 
-    const angle = t / 60
+    let angle = 2*Math.PI / t
+    if (path)
+    {
+        angle = t
+    }
 
     const SB = DIST_MAX[k]
     const OB = DIST_MIN[k] 
@@ -29,14 +33,13 @@ function orbit_position_calc(ref, t, scale_ratio, inclination, e, k = 0)
     }
 }
 
-function orbital_path(k, scale_ratio, add_ref = new THREE.Vector3())
+function orbital_path(k, scale_ratio, ref = new THREE.Vector3())
 {
     let points = [];
 
-    for (let angle = 0; angle <= Math.PI * 2 ; angle += Math.PI/180) {
+    for (let angle = 0; angle <= 2*Math.PI; angle += Math.PI/180) {
         
-
-        const p = orbit_position_calc(add_ref, angle, scale_ratio, INCLINATIONS[k], EXCENTRICITIES[k], k);
+        const p = orbit_position_calc(ref, angle, scale_ratio, INCLINATIONS[k], EXCENTRICITIES[k], k, true);
         const three_p = new THREE.Vector3(p.x, p.y, p.z);
         points.push(three_p);
     }
@@ -68,7 +71,7 @@ function saturn_rings(k, scale_ratio, astres)
 {
     let points = [];
 
-    for (let angle = 0; angle <= 360 ; angle += 10) {
+    for (let angle = 0; angle <= 360; angle += 10) {
 
         // 7 car saturne + ([0]/[1] = ratio)
         const r = (RAYONS[7] + (SATURN_RINGS_R[0] / SATURN_RINGS_R[1]) * k * 100);
