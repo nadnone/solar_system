@@ -41,8 +41,13 @@ const COMMANDS_TEXT = `
                     
 const PROJECT_LINK_TEXT = `<br/></br>### Infos Project ###<br/>
     <a href='https://github.com/nadnone/solar_system' target='_blank'>Source code</a></br>
+    <a href='./credits.html' target='_blank'>Credits</a></br>
+    <br/>
     <a href='https://github.com/nadnone/' target='_blank'>GitHub Profile Page</a></br>
     <a href='https://nadnone.github.io' target='_blank'>Nadfolio (Portfolio)</a>
+    <br/><br/>
+    (Please right-click if you can't)
+ 
 `;
 
 export {

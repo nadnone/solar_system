@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CAMERA_INIT_DIST, COLORS, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SCALE_RATIO_INIT, INIT_SPEED_RATIO, SCALE_RATIO_MIN, EXCENTRICITIES, SCALE_STEP, SCALE_RATIO_MAX } from './constants';
+import { CAMERA_INIT_DIST, COLORS, DISTANCES, FPS, INCLINATIONS, INITIAL_ASTRE, MAX_SPEED_RATIO, PERIODES, RAYONS, SATURN_RINGS_COLORS, SOLEIL_INTENSITY, STANDARD_EMISSIVE, SCALE_RATIO_INIT, INIT_SPEED_RATIO, SCALE_RATIO_MIN, EXCENTRICITIES, SCALE_STEP, SCALE_RATIO_MAX, ANGLE_TO_RAD } from './constants';
 import { orbit_position_calc, orbital_path, saturn_rings } from './gen_orbital_path';
 import { TEXTURES } from './textures';
 import { ASTRES_NAMES, COMMANDS_TEXT, PROJECT_LINK_TEXT } from './panel_texts';
@@ -46,6 +46,10 @@ for (let i = 0; i < 10; i++) {
     // gen meshes
     const geometry = new THREE.SphereGeometry(RAYONS[i], 32, 32);
     let material = new THREE.MeshLambertMaterial( { map: TEXTURES[i], emissive: COLORS[i], emissiveIntensity: STANDARD_EMISSIVE } );
+
+    
+
+    
 
     if (i === 0) // for the sun
     {
