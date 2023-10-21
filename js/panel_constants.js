@@ -27,12 +27,16 @@ const COMMANDS_TEXT = `
     9: Neptune
 
     ### Scale Keys ###
-    W: scale * 2
-    S: scale / 2
+    W: scale + 2
+    S: scale - 2
 
     ### Speed Keys ###
     A: Speed * 2 
     D: Speed / 2
+
+    ### Camera Keys ###
+    Numpad 4: rotate + 2 deg
+    Numpad 6: rotate - 2 deg
 
     ### MISC ###
     F5: Reset All

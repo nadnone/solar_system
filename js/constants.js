@@ -1,5 +1,5 @@
 const ANGLE_TO_RAD = Math.PI/180;
-const RATIO_PERIODE = 365*24*3600;
+const RATIO_PERIODE = 24*3600;
 const RATIO_RAYON = 10**(-3)
 const RATIO_DIST = 10**(-4) 
 const RATIO_LUX =  10**4;
@@ -9,6 +9,7 @@ const SOLEIL_DIST = 0;
 const SOLEIL_PERIODE = 0;
 const SOLEIL_COLOR = "#FDB813";
 const SOLEIL_INTENSITY = 5*10**4 * RATIO_LUX
+const SOLEIL_LIGHT_DIST = 10**24;
 
 const MERCURE_PERIODE = 88 * RATIO_PERIODE // Jours
 const MERCURE_DIST = 58; // Millions de km
@@ -236,11 +237,8 @@ const SCALE_RATIO_MAX = 10;
 const SCALE_STEP = .1;
 
 const INITIAL_ASTRE = 3;
-const CAMERA_INIT_DIST = {
-    "x": 20,//-20, 
-    "y": 1,
-    "z": 10,
-}
+
+const CAMERA_INIT_R = 1;
 
 const STANDARD_EMISSIVE = 1/32;
 const FPS = 100;
@@ -261,7 +259,6 @@ export {
     SOLEIL_INTENSITY,
     STANDARD_EMISSIVE,
     FPS,
-    CAMERA_INIT_DIST,
     INITIAL_ASTRE,
     INIT_SPEED_RATIO,
     EXCENTRICITIES,
@@ -271,5 +268,7 @@ export {
     SCALE_STEP,
     SCALE_RATIO_MAX,
     RATIO_PERIODE,
-    PLANETS_DAYS
+    PLANETS_DAYS,
+    CAMERA_INIT_R,
+    SOLEIL_LIGHT_DIST
 }
