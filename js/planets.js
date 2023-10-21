@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { 
     COLORS, 
     INCLINATIONS,
-    PERIODES, 
     RAYONS, 
     SATURN_RINGS_COLORS, 
     STANDARD_EMISSIVE, 
@@ -10,7 +9,8 @@ import {
     ANGLE_TO_RAD,
     PLANETS_DAYS,
     SCALE_RATIO_INIT,
-    CAMERA_INIT_R
+    CAMERA_INIT_R,
+    PI2
 } from './constants';
 import { orbit_position_calc, orbital_path, saturn_rings } from './gen_orbital_path';
 import { TEXTURES } from './textures';
@@ -99,15 +99,13 @@ export default class Planets
         
     }
 
-    update(virtual_t, scale_ratio, scale_state, camera, digit_astre, rotate_control)
+    update(t, scale_ratio, scale_state, camera, digit_astre, rotate_control)
     {
- 
         // on commence à 1 pour passer le soleil
         for (let i = 1; i < this.astres.length; i++) {
 
 
-            const phi = PERIODES[i]/virtual_t; // angle de rotation
-            let add_pos = new THREE.Vector3(); // référenciel
+            let add_pos = new THREE.Vector3(); // référenciel¨
 
             if (i === 4) // pour la lune 
             {
@@ -117,13 +115,16 @@ export default class Planets
             // rotation d'une journée sur chaque planète
             if (i > 0)
             {
-                const day_rad = 2 * Math.PI / (phi * PLANETS_DAYS[i]) 
-                this.astres[i].geometry.rotateY(day_rad);
+                const planet_day = PLANETS_DAYS[i] / t // durée du jours de chaque planète
+                const angle_rot = PI2 / planet_day // conversion en angle
+                
+                // l'ancienne fonction n'était pas adaptée
+                this.astres[i].setRotationFromAxisAngle(new THREE.Vector3(0,1,0), angle_rot);
             }
     
 
             // calcul des positions
-            const p = orbit_position_calc(add_pos, phi, scale_ratio, INCLINATIONS[i], EXCENTRICITIES[i], i);
+            const p = orbit_position_calc(add_pos, t, scale_ratio, INCLINATIONS[i], EXCENTRICITIES[i], i);
             this.astres[i].position.set(p.x, p.y, p.z);   
 
             // echelle

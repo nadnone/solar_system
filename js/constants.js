@@ -1,5 +1,5 @@
 const ANGLE_TO_RAD = Math.PI/180;
-const RATIO_PERIODE = 24*3600;
+const PI2 = 2*Math.PI
 const RATIO_RAYON = 10**(-3)
 const RATIO_DIST = 10**(-4) 
 const RATIO_LUX =  10**4;
@@ -11,7 +11,7 @@ const SOLEIL_COLOR = "#FDB813";
 const SOLEIL_INTENSITY = 5*10**4 * RATIO_LUX
 const SOLEIL_LIGHT_DIST = 10**24;
 
-const MERCURE_PERIODE = 88 * RATIO_PERIODE // Jours
+const MERCURE_PERIODE = 88  // Jours
 const MERCURE_DIST = 58; // Millions de km
 const MERCURE_RAYON = 2439.7  * RATIO_RAYON; // de km
 const MERCURE_COLOR = "#b1adad";
@@ -21,7 +21,7 @@ const MERCURE_DIST_MIN = 46001200
 const MERCURE_DIST_MAX = 69816900
 const MERCURE_DAY = 59 // jours
 
-const VENUS_PERIODE = 243 * RATIO_PERIODE
+const VENUS_PERIODE = 243 
 const VENUS_DIST = 108 ;
 const VENUS_RAYON = 6051 * RATIO_RAYON; //  de km
 const VENUS_COLOR = "#e39e1c";
@@ -31,7 +31,7 @@ const VENUS_DIST_MIN = 107476000
 const VENUS_DIST_MAX = 108943000
 const VENUS_DAY = 243 // jours
 
-const TERRE_PERIODE = 365 * RATIO_PERIODE
+const TERRE_PERIODE = 365 
 const TERRE_DIST = 149 ;
 const TERRE_RAYON = 6371 * RATIO_RAYON; //  de km
 const TERRE_COLOR = "#0000ff";
@@ -41,7 +41,7 @@ const TERRE_DIST_MIN = 147098074
 const TERRE_DIST_MAX = 152097701
 const TERRE_DAY = 1 // jours
 
-const LUNE_PERIODE = 29.5 * RATIO_PERIODE 
+const LUNE_PERIODE = 29.5  
 const LUNE_DIST_TERRE = 384400  * 10**(-6); // millions de km
 const LUNE_RAYON = 1737.4 * RATIO_RAYON; // de km
 const LUNE_COLOR = "#f5f5f5";
@@ -51,7 +51,7 @@ const LUNE_DIST_MIN = 356700
 const LUNE_DIST_MAX = 406300
 const LUNE_DAY = 14.75 // jours
 
-const MARS_PERIODE = 186 * RATIO_PERIODE
+const MARS_PERIODE = 186 
 const MARS_DIST = 228 ;
 const MARS_RAYON = 3389 * RATIO_RAYON; //  de km
 const MARS_COLOR = "#451804";
@@ -61,7 +61,7 @@ const MARS_DIST_MIN = 206655000
 const MARS_DIST_MAX = 249230000
 const MARS_DAY = 1 // jours
 
-const JUPITER_PERIODE = 11*365 * RATIO_PERIODE
+const JUPITER_PERIODE = 11*365 
 const JUPITER_DIST = 778 ;
 const JUPITER_RAYON = 69911 * RATIO_RAYON; //  de km
 const JUPITER_COLOR = "#c99039";
@@ -71,7 +71,7 @@ const JUPITER_DIST_MIN = 740680000
 const JUPITER_DIST_MAX = 816000000
 const JUPITER_DAY = 9/24 // jours
 
-const SATURNE_PERIODE = 29.5*365 * RATIO_PERIODE
+const SATURNE_PERIODE = 29.5*365 
 const SATURNE_DIST = 1430 ;
 const SATURNE_RAYON = 58232 * RATIO_RAYON; //  de km
 const SATURNE_COLOR = "#ceb8b8";
@@ -81,7 +81,7 @@ const SATURNE_DIST_MIN = 1349800000
 const SATURNE_DIST_MAX = 1503500000
 const SATURNE_DAY = 10/24 // jours
 
-const URANUS_PERIODE = 84*365 * RATIO_PERIODE
+const URANUS_PERIODE = 84*365 
 const URANUS_DIST = 2800 ;
 const URANUS_RAYON = 25362 * RATIO_RAYON; //  de km
 const URANUS_COLOR = "#E1EEEE";
@@ -91,7 +91,7 @@ const URANUS_DIST_MIN = 2735000000
 const URANUS_DIST_MAX = 3006300000
 const URANUS_DAY = 17/24 // jours
 
-const NEPTUNE_PERIODE = 165*365 * RATIO_PERIODE
+const NEPTUNE_PERIODE = 165*365 
 const NEPTUNE_DIST = 4504 ;
 const NEPTUNE_RAYON = 24622 * RATIO_RAYON; //  de km
 const NEPTUNE_COLOR = "#5B5DDF";
@@ -218,9 +218,9 @@ const INCLINATIONS = [
 ]
 
 
-const INIT_SPEED_RATIO = 1
-const MAX_SPEED_RATIO = 60*10**4;
-const MIN_SPEED_RATIO = 1 // 1 hours on earth
+const INIT_SPEED_RATIO = 1/(3600*24)
+const MAX_SPEED_RATIO = 365*6;
+const MIN_SPEED_RATIO = INIT_SPEED_RATIO 
 
 const SATURN_RINGS_R = [
     66900, // km 
@@ -239,6 +239,7 @@ const SCALE_STEP = .1;
 const INITIAL_ASTRE = 3;
 
 const CAMERA_INIT_R = 1;
+const INIT_CAM_ROTATION = 0;
 
 const STANDARD_EMISSIVE = 1/32;
 const FPS = 100;
@@ -267,8 +268,9 @@ export {
     DIST_MIN,
     SCALE_STEP,
     SCALE_RATIO_MAX,
-    RATIO_PERIODE,
     PLANETS_DAYS,
     CAMERA_INIT_R,
-    SOLEIL_LIGHT_DIST
+    SOLEIL_LIGHT_DIST,
+    INIT_CAM_ROTATION,
+    PI2
 }

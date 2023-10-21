@@ -23,6 +23,7 @@ let sunLight = new THREE.PointLight( 0, 0, 0 );
 scene.add(sunLight);
 
 let t = 0;
+
 function animate(event, panels, planets) {   
 
 	const t0 = performance.now(); // Omega test
@@ -40,10 +41,12 @@ function animate(event, panels, planets) {
     planets.update(virtual_t, event.scale_ratio, event.scale_state, camera, event.digit_astre, event.rotate);
 
     const t1 = performance.now(); // Omega test
-
-    t += (t1 - t0) * 100;
+    
+    // temps pour simulation
+    t = performance.now()
 
     panels.update(event.speed_time_ratio, virtual_t, t, t0, t1);
+
 
 	renderer.render( scene, camera );
 }

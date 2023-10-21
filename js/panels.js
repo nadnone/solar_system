@@ -25,9 +25,10 @@ export default class Panels
     
             [DEBUG]
             Benchmark time: ~${(t1 - t0).toFixed(3)} ms
-             Time:
-            - virtual: ~${(virtual_t).toFixed(0)} units
-            - t: ~${(t).toFixed(0)} units
+
+            Time:
+            - virtual: ~${(virtual_t).toFixed(6)} units
+            - t: ~${(t).toFixed(0)} ms
     
         `;
         this.text_panel.innerHTML += PROJECT_LINK_TEXT;

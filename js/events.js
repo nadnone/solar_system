@@ -1,4 +1,4 @@
-import { INITIAL_ASTRE, INIT_SPEED_RATIO, MAX_SPEED_RATIO, MIN_SPEED_RATIO, SCALE_RATIO_INIT, SCALE_RATIO_MAX, SCALE_RATIO_MIN, SCALE_STEP } from "./constants";
+import { INITIAL_ASTRE, INIT_CAM_ROTATION, INIT_SPEED_RATIO, MAX_SPEED_RATIO, MIN_SPEED_RATIO, SCALE_RATIO_INIT, SCALE_RATIO_MAX, SCALE_RATIO_MIN, SCALE_STEP } from "./constants";
 import { ASTRES_NAMES } from "./panel_constants";
 
 
@@ -10,7 +10,7 @@ export default class Events {
         this.digit_astre = INITIAL_ASTRE;
         this.scale_state = false;
         this.speed_time_ratio = INIT_SPEED_RATIO;
-        this.rotate = 0;
+        this.rotate = INIT_CAM_ROTATION;
 
         this._init_resize_event();
         this._init_keyboard_event(astre_panel);

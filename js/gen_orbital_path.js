@@ -1,18 +1,19 @@
 import * as THREE from 'three';
-import {ANGLE_TO_RAD, DIST_MAX, DIST_MIN, EXCENTRICITIES, INCLINATIONS, PERIODES, RAYONS, SATURN_RINGS_INCLINATION, SATURN_RINGS_R } from './constants.js';
+import {ANGLE_TO_RAD, DIST_MAX, DIST_MIN, EXCENTRICITIES, INCLINATIONS, PERIODES, PI2, RAYONS, SATURN_RINGS_INCLINATION, SATURN_RINGS_R } from './constants.js';
 
-function orbit_position_calc(ref, t, scale_ratio, inclination, e, k = 0, path=false)
+function orbit_position_calc(ref, jours, scale_ratio, inclination, e, k = 0, path=false)
 {
 
     // inspiré de mon précédent code ici: https://github.com/nadnone/Satellite_movement_kepler/blob/main/all.js
 
-    let angle = 2*Math.PI / t
-    if (path)
+    let angle = PI2 / (PERIODES[k] / jours) // portion de periode d'astre en redian
+
+    if (path) // si ce n'est pas un jour, on récupère l'angle en radian
     {
-        angle = t
+        angle = jours
     }
 
-    const SB = DIST_MAX[k]
+    const SB = DIST_MAX[k] 
     const OB = DIST_MIN[k] 
     const SO = Math.sqrt( SB**2 - OB**2 ) // distance du centre de l'astre au foyer
 
@@ -37,7 +38,7 @@ function orbital_path(k, scale_ratio, ref = new THREE.Vector3())
 {
     let points = [];
 
-    for (let angle = 0; angle <= 2*Math.PI; angle += Math.PI/180) {
+    for (let angle = 0; angle <= PI2; angle += Math.PI/180) {
         
         const p = orbit_position_calc(ref, angle, scale_ratio, INCLINATIONS[k], EXCENTRICITIES[k], k, true);
         const three_p = new THREE.Vector3(p.x, p.y, p.z);
