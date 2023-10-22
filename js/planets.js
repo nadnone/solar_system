@@ -10,7 +10,8 @@ import {
     PLANETS_DAYS,
     SCALE_RATIO_INIT,
     CAMERA_INIT_R,
-    PI2
+    PI2,
+    AXE_INCLINATION
 } from './constants';
 import { orbit_position_calc, orbital_path, saturn_rings } from './gen_orbital_path';
 import { TEXTURES } from './textures';
@@ -48,12 +49,6 @@ export default class Planets
             }
 
             let mesh = new THREE.Mesh( geometry, material );
-            if (i === 3) // inclinaison temporaire de la terre
-            {
-                mesh.geometry.rotateZ(-23.4 * ANGLE_TO_RAD);
-
-            }      
-
             this.astres.push(mesh);
 
             // gen lines
@@ -85,7 +80,7 @@ export default class Planets
         
             this.scene.add(this.astres[i]);
 
-            if (i !== 9)
+            if (i !== this.astres.length - 1) // pas de path pour le soleil
             {
                 this.scene.add(this.lines[i]);
             }
@@ -117,9 +112,8 @@ export default class Planets
             {
                 const planet_day = PLANETS_DAYS[i] / t // durée du jours de chaque planète
                 const angle_rot = PI2 / planet_day // conversion en angle
-                
-                // l'ancienne fonction n'était pas adaptée
-                this.astres[i].setRotationFromAxisAngle(new THREE.Vector3(0,1,0), angle_rot);
+
+                this.astres[i].setRotationFromEuler(new THREE.Euler(-AXE_INCLINATION[i] * ANGLE_TO_RAD, angle_rot, 0));
             }
     
 
