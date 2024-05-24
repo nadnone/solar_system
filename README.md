@@ -1,6 +1,12 @@
 # Introduction
 Simple solar system for fun
 
+# Sources
+- [My code from there (Satellite movement Kepler)](https://github.com/nadnone/Satellite_movement_kepler)
+- Wikipedia
+- The knowledges gained with my others projects
+- Three.js
+
 # License
 Copyright (C) 2023 Nadir Felder
 
