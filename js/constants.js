@@ -266,6 +266,7 @@ const INIT_CAM_ROTATION = 0;
 const STANDARD_EMISSIVE = 1/32;
 const FPS = 100;
 
+
 export { 
     PERIODES,
     DISTANCES,

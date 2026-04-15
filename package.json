@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "npm": "^10.2.0",
+    "npm": "^10.9.8",
     "three": "^0.157.0"
   },
   "devDependencies": {
-    "vite": "^4.4.11"
+    "vite": "^8.0.8"
   }
 }

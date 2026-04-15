@@ -38,6 +38,8 @@ const COMMANDS_TEXT = `
     Numpad 4: rotate + 2 deg
     Numpad 6: rotate - 2 deg
 
+    (or left click and slide)
+
     ### MISC ###
     F5: Reset All
 `;

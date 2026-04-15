@@ -94,10 +94,17 @@ export default class Planets
         
     }
 
-    update(t, scale_ratio, scale_state, camera, digit_astre, rotate_control)
+    update(t, camera, event)
     {
+
+        let scale_ratio = event.scale_ratio;
+        let scale_state = event.scale_state;
+        let digit_astre = event.digit_astre;
+        let rotate_control = event.rotate;
+
+
         // on commence à 1 pour passer le soleil
-        for (let i = 1; i < this.astres.length; i++) {
+        for (let i = 0; i < this.astres.length; i++) {
 
 
             let add_pos = new THREE.Vector3(); // référenciel¨
@@ -119,13 +126,17 @@ export default class Planets
 
             // calcul des positions
             const p = orbit_position_calc(add_pos, t, scale_ratio, INCLINATIONS[i], EXCENTRICITIES[i], i);
-            this.astres[i].position.set(p.x, p.y, p.z);   
+            
+            if (i > 0) {
+                this.astres[i].position.set(p.x, p.y, p.z);     
+            }
+            
 
             // echelle
             this.astres[i].scale.set(scale_ratio, scale_ratio, scale_ratio);
             if (scale_state)
             {
-                for (let j = 1; j < this.lines.length; j++) {
+                for (let j = 0; j < this.lines.length; j++) {
                 
                     // j = 1 car décalage, on compte sans le soleil
                     const material_line = new THREE.LineBasicMaterial( { color: COLORS[j] } )
@@ -156,8 +167,10 @@ export default class Planets
 
             const pos = rotate_around_XZ(this.astres[digit_astre].position, rotate_control * ANGLE_TO_RAD, RAYONS[digit_astre]*2 * scale_ratio + CAMERA_INIT_R);
             camera.position.x = pos.x;
-            camera.position.y = pos.y;
-            camera.position.z = pos.z;
+            camera.position.y = pos.y + event.moveCamY;
+            camera.position.z = pos.z - 10;
+
+            
         }
     }
    

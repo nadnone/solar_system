@@ -38,7 +38,7 @@ function animate(event, panels, planets) {
     scene.add(sunLight);
 
 
-    planets.update(virtual_t, event.scale_ratio, event.scale_state, camera, event.digit_astre, event.rotate);
+    planets.update(virtual_t, camera, event);
 
     const t1 = performance.now(); // Omega test
     
