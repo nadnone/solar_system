@@ -165,12 +165,10 @@ export default class Planets
             // on observe l'astre demandé
             camera.lookAt(this.astres[digit_astre].position);
 
-            const pos = rotate_around_XZ(this.astres[digit_astre].position, rotate_control * ANGLE_TO_RAD, RAYONS[digit_astre]*2 * scale_ratio + CAMERA_INIT_R);
+            const pos = rotate_around_XZ(this.astres[digit_astre].position, rotate_control, RAYONS[digit_astre]*2 * scale_ratio + CAMERA_INIT_R);
             camera.position.x = pos.x;
             camera.position.y = pos.y + event.moveCamY;
-            camera.position.z = pos.z - 10;
-
-            
+            camera.position.z = pos.z + event.moveCamX;
         }
     }
    

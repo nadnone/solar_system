@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { INITIAL_ASTRE, INIT_CAM_ROTATION, INIT_SPEED_RATIO, MAX_SPEED_RATIO, MIN_SPEED_RATIO, SCALE_RATIO_INIT, SCALE_RATIO_MAX, SCALE_RATIO_MIN, SCALE_STEP } from "./constants";
+import { ANGLE_TO_RAD, INITIAL_ASTRE, INIT_CAM_ROTATION, INIT_SPEED_RATIO, MAX_SPEED_RATIO, MIN_SPEED_RATIO, PI2, SCALE_RATIO_INIT, SCALE_RATIO_MAX, SCALE_RATIO_MIN, SCALE_STEP } from "./constants";
 import { ASTRES_NAMES } from "./panel_constants";
 
 
@@ -13,6 +13,7 @@ export default class Events {
         this.speed_time_ratio = INIT_SPEED_RATIO;
         this.rotate = INIT_CAM_ROTATION;
         this.moveCamY = 0;
+        this.moveCamX = 0;
         
         this._init_resize_event();
         this._init_keyboard_event(astre_panel);
@@ -63,10 +64,21 @@ export default class Events {
             // if left click maintained
             if (event.buttons == 1)
             {
-                this.rotate += event.movementX / mouse_speed
+                this.moveCamX += event.movementX / mouse_speed
                 this.moveCamY += event.movementY / mouse_speed
             }
 
+            // cap the values
+            
+            if (this.moveCamX > PI2)
+                this.moveCamX = PI2;
+            else if (this.moveCamX < -PI2)
+                this.moveCamX = -PI2
+
+            if (this.moveCamY > PI2)
+                this.moveCamY = PI2;
+            else if (this.moveCamY < -PI2)
+                this.moveCamY = -PI2;
 
         });
 
@@ -127,15 +139,22 @@ export default class Events {
             
                 // rotate camera
                 case 'Numpad4':
-                    this.rotate += 2;
+                    this.rotate += 2 * ANGLE_TO_RAD;
                     break;
                 case 'Numpad6':
-                    this.rotate -= 2;
+                    this.rotate -= 2 * ANGLE_TO_RAD;
                     break;
 
                 default:
                     break;
             }
+
+            // cap rotation values
+            if(this.rotate < -PI2/2)
+                this.rotate = -PI2/2;
+            else if (this.rotate > PI2/2)
+                this.rotate = PI2/2;
+
 
             this._update(astre_panel);
         });
